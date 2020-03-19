@@ -16,12 +16,15 @@ var timeBegan = null,
     startedTimer = null;
 
 var min, newBestscore = 0;
+var gStart = 0;
+
+var gHints = 3, gSafeClick = 3;
+var doomShulaInterval;
 
 var elTimer = document.querySelector('.zTimer');
 var elTable = document.querySelector('.table');
 
-renderBoard(getShulaBoard(gLevel));
-
+fakeStart();
 
 // Disabling right-mouse context menu for wanted behaviour
 
@@ -37,18 +40,76 @@ window.addEventListener('contextmenu', function (event) {
 //     FUNCTIONS		//
 //=====================//
 
-function getShulaBoard(level) {
 
-    var boardSize = level.SIZE;
+function getFakeBoard() {
+
+    var fakeBoard = [];
+
+    for (var i = 0; i < gLevel.SIZE; i++) {
+
+        var fakeBoardRow = [];
+        for (var j = 0; j < gLevel.SIZE; j++) {
+
+            fakeBoardRow.push(SPACE);
+        }
+        fakeBoard.push(fakeBoardRow);
+    }
+    console.log(fakeBoard);
+    return fakeBoard;
+}
+
+
+
+function fakeStart(eldiffButton = null) {
+
+    if (eldiffButton) {
+        gStart = 0;
+        gGame.shownCount = 0;
+        elTable.className = 'table';
+        gGame.isOn = false;
+        document.querySelector('.hints').innerHTML = '';
+        document.querySelector('.safe-clicks').innerHTML = '';
+
+        clearInterval(doomShulaInterval);
+        doomShulaInterval = null;
+        
+        animateDoomShula('random');
+
+        resetGLevel(eldiffButton);
+    }
+    resetTimer();
+    renderBoard(getFakeBoard());
+}
+
+function ensureSafeSpot(minesIdxs, safeSpot) {
+
+    for (var i = 0; i < minesIdxs.length; i++) {
+
+        if ((safeSpot.i * gLevel.SIZE + safeSpot.j) === minesIdxs[i]) {
+
+            while ((safeSpot.i * gLevel.SIZE + safeSpot.j) === minesIdxs[i]) {
+
+                minesIdxs[i] = Math.floor(Math.random() * Math.pow(gLevel.SIZE, 2));
+            }
+        }
+    }
+}
+
+function getShulaBoard(level, safeSpot = null) {
 
     var minesIdxs = setMines();
 
-    for (var i = 0; i < boardSize; i++) {
+    if (safeSpot) {
+
+        ensureSafeSpot(minesIdxs, safeSpot)
+    }
+
+    for (var i = 0; i < level.SIZE; i++) {
 
         var shulaRow = []
-        for (var j = 0; j < boardSize; j++) {
+        for (var j = 0; j < level.SIZE; j++) {
 
-            var temp1DIdx = i * boardSize + j;
+            var temp1DIdx = i * level.SIZE + j;
 
             if (minesIdxs.includes(temp1DIdx)) {
 
@@ -69,10 +130,12 @@ function getShulaBoard(level) {
 }
 
 
-function renderBoard(numsBoard) {
+function renderBoard(numsBoard, safeSpot = null, event = null) {
 
     var strHtml = '', classAdd = '', glareStat = '', tiltStat = '30';
+    var functionMode = (gStart === 1) ? `onmouseup="cellClicked(this, event)"` : `onmouseup="resetGame(this, true, event)"`;
 
+    // console.log(functionMode);
     if (gLevel.DIFF === 3) {
 
         // classAdd = 'data-tilt-reset';
@@ -88,75 +151,87 @@ function renderBoard(numsBoard) {
         glareStat = '0.6';
     }
 
-
-    for (var i = 0; i < shulaBoard.length; i++) {
+    for (var i = 0; i < numsBoard.length; i++) {
 
         strHtml += '<div class="num-row">';
 
-        for (var j = 0; j < shulaBoard[i].length; j++) {
+        for (var j = 0; j < numsBoard[i].length; j++) {
 
             gCount += 1;
 
 
-            if (shulaBoard[i][j] != MINE) {
+            if (numsBoard[i][j] != MINE) {
 
-                if (shulaBoard[i][j] > 0) {
+                if (numsBoard[i][j] > 0) {
 
-                    classAdd = `num-type-${shulaBoard[i][j]}`;
+                    classAdd = `num-type-${numsBoard[i][j]}`;
                 }
             }
 
-            strHtml += `<span class="span${gCount} outter-span" data-tilt><div onmouseup="cellClicked(this, event)" class="num-cell cell${gCount} num-cell-${gLevel.DIFF} in${i}-${j}" data-tilt>
-            <span class="inner-num covered ${classAdd}">${shulaBoard[i][j]}</span>
+            strHtml += `<span class="span${gCount} outter-span" data-tilt><div ${functionMode} class="num-cell cell${gCount} num-cell-${gLevel.DIFF} in${i}-${j}" data-tilt>
+            <span class="inner-num covered ${classAdd}">${numsBoard[i][j]}</span>
             </div></span>`;
 
         }
 
         strHtml += '</div>'
     }
-    // console.log(`gCOUNT: ${gCount}`);
 
     gCount -= gLevel.MINES;
     elTable.innerHTML = strHtml;
     gGame.isOn = true;
 
     initTiltBoard();
+    // console.log('ARRIVED AGAIN');
+    if (gStart === 1 && safeSpot != null) {
 
-}
+        var elSafeSpot = document.querySelector(`.in${safeSpot.i}-${safeSpot.j}`);
 
-function initTiltBoard() {
 
-    var tiltSpans = document.querySelectorAll(".outter-span");
-    var innerTiltSpans = document.querySelectorAll(".num-cell");
+        cellClicked(elSafeSpot, event);
 
-    VanillaTilt.init(tiltSpans, {
+        // console.log(`SAFE`, elSafeSpot);
+        gStart = 0;
+    }
 
-        max: (gLevel.DIFF === 3) ? 15 : 20,
-        speed: 500,
-        // glare: true,
-        // "max-glare": 0.6,
-        // reverse: true,
-
-    });
-
-    VanillaTilt.init(innerTiltSpans, {
-        // reset: gLevel.DIFF > 2 ? false : true,
-        // glare: true,
-        // "max-glare": 0.1,
-    });
+    if (!gStart) gStart = 1
+    // console.log('GSTART:', gStart);
 
 }
 
 
-function resetGame(elDiffButton) {
+function resetGLevel(elButton) {
 
-    newBestscore = 0;
-    var difficulty = elDiffButton.classList[1];
+    var difficulty = elButton.classList[1];
     gLevel.DIFF = parseInt(difficulty[difficulty.length - 1]);
 
     if (gLevel.DIFF === 1) gLevel.SIZE = 4, gLevel.MINES = 2;
     else if (gLevel.DIFF === 2) gLevel.SIZE = 8, gLevel.MINES = 12;
     else if (gLevel.DIFF === 3) gLevel.SIZE = 12, gLevel.MINES = 20;
+}
+
+function resetGame(elStartButton, mode = false, event = null) {
+
+    var safeSpot = null;
+
+    if (mode) {
+
+        var clickedSafePlace = elStartButton.classList[elStartButton.classList.length - 1];
+        safeSpot = getIdxs(clickedSafePlace);
+        console.log(safeSpot);
+    } else {
+
+        resetGLevel(elStartButton);
+    }
+
+    newBestscore = 0;
+    gHints = gSafeClick = 3;
+    var elHints = document.querySelector('.hints');
+    var elSafeClicks = document.querySelector('.safe-clicks');
+
+    elHints.innerHTML = '';
+    elSafeClicks.innerHTML = '';
+
     // console.log(`gLEVEL: DIFF = ${gLevel.DIFF} | SIZE = ${gLevel.SIZE} | MINES: ${gLevel.MINES}`);
 
     elTable.className = 'table';
@@ -167,30 +242,9 @@ function resetGame(elDiffButton) {
 
     gCount = 0, shulaBoard = [];
 
-    renderBoard(getShulaBoard(gLevel));
+    renderBoard(getShulaBoard(gLevel, safeSpot), safeSpot, event);
 }
 
-
-function setMines() {
-
-    var minesIdxVault = [];
-    var newIdx = Math.floor(Math.random() * Math.pow(gLevel.SIZE, 2));
-
-    for (var i = 0; i < gLevel.MINES; i++) {
-
-        while (minesIdxVault.includes(newIdx)) {
-            // console.log('IDX:', newIdx);
-
-            newIdx = Math.floor(Math.random() * Math.pow(gLevel.SIZE, 2));
-        }
-        minesIdxVault.push(newIdx);
-        // console.log(minesIdxVault);
-    }
-
-    console.log(minesIdxVault);
-
-    return minesIdxVault;
-}
 
 
 function cellClicked(elNum, eventButton) {
@@ -201,7 +255,7 @@ function cellClicked(elNum, eventButton) {
 
     var elClickedNum = document.querySelector(`.${numId}`);
     var elClickedInnerNum = document.querySelector(`.${numId} span`);
-    console.log(eventButton);
+    // console.log(eventButton);
 
     if (!(elClickedInnerNum.classList.contains('covered')) || !gGame.isOn) return;
 
@@ -210,6 +264,7 @@ function cellClicked(elNum, eventButton) {
         if (eventButton.which === 3) {
 
             elClickedNum.classList.remove('flagged');
+            gGame.markedCount -= 1;
         }
         return;
 
@@ -218,6 +273,7 @@ function cellClicked(elNum, eventButton) {
         if (eventButton.which === 3) {
 
             elClickedNum.classList.add('flagged');
+            gGame.markedCount += 1;
             return;
         }
     }
@@ -225,6 +281,7 @@ function cellClicked(elNum, eventButton) {
 
     if (!gGame.shownCount) {
         startTime();
+        handleHintsAndSafeClicks('both');
         elTable.classList.add(`table-start-${gLevel.DIFF}`);
     }
 
@@ -233,19 +290,16 @@ function cellClicked(elNum, eventButton) {
     if (pressedSpot === SPACE) { // Pressed a space
 
         var emptyIdx = getIdxs(elClickedNum.classList[elClickedNum.classList.length - 1]);
-        // Recursively look for adjacent spaces
+
         recOpenEmptySpots(emptyIdx, expandingEmptySpots, checkedEmptyIdxs);
-        console.log(`EXPANDERS:`, expandingEmptySpots);
-        console.log(`CHECKED:`, checkedEmptyIdxs);
-
         gGame.shownCount += expandingEmptySpots.length;
-
         uncoverAllAdjEmpty(expandingEmptySpots);
 
+        if (!(gCount === gGame.shownCount)) animateDoomShula(DOOM_HAPPY);
 
     } else if (pressedSpot != MINE) { // Pressed a num
 
-        if(parseInt(elClickedInnerNum.innerHTML) > 0) {
+        if (parseInt(elClickedInnerNum.innerHTML) > 0) {
 
             gGame.shownCount += 1;
             elClickedNum.style.background = 'lightgray';
@@ -254,15 +308,17 @@ function cellClicked(elNum, eventButton) {
 
     } else { // Pressed a mine
 
+
         console.log('BIP BOOP BOP - YOU ARE DEAD');
-        
+
         elClickedInnerNum.classList.remove('covered');
         endGame(true);
     }
 
-    if(gCount === gGame.shownCount) endGame();
+    if (gCount === gGame.shownCount) endGame();
     // console.log(`gCount:`,gCount, `gGame.shownCount:`, gGame.shownCount);
-    
+    // console.log('SHOWCOUNT:', gGame.shownCount);
+
 }
 
 function endGame(mine = false) {
@@ -271,13 +327,29 @@ function endGame(mine = false) {
     stopTimer();
     elTable.className = 'table';
 
+    clearInterval(doomShulaInterval);
+    doomShulaInterval = null;
+
     if (!mine) {
 
-        elTimer.style.fontSize = "50px";
+        animateDoomShula(DOOM_HAPPY, true);
+        // elTimer.style.fontSize = "50px";
         if (updateScore()) elTimer.classList.add('new-best-score-timer');
+
+    } else {
+
+        animateDoomShula(DOOM_ANGRY, true);
     }
 }
 
+function showHint() {
 
+
+}
+
+function showSafeClick() {
+
+
+}
 
 

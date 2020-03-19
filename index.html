@@ -14,14 +14,21 @@
     
     <div class="container">
 
-        <div class="zTimer">000</div>
+        <div class="game-hud">
+            <div class="hints-and-safeclicks">
+                <div class="hints"></div>
+                <div class="safe-clicks"></div>
+            </div>
+            <img src="assets/doomguy-interested.png" class="doom-shula">
+            <div class="zTimer">000</div>
+        </div>
         <div class="table">
 
         </div>
         <div class="diffBar">
-            <button class="diffButton diff1" onclick="resetGame(this)">4x4</button>
-            <button class="diffButton diff2" onclick="resetGame(this)">8x8</button>
-            <button class="diffButton diff3" onclick="resetGame(this)">12x12</button>
+            <button class="diffButton diff1" onclick="fakeStart(this)">4x4</button>
+            <button class="diffButton diff2" onclick="fakeStart(this)">8x8</button>
+            <button class="diffButton diff3" onclick="fakeStart(this)">12x12</button>
         </div>
 
     </div>

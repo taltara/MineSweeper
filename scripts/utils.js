@@ -1,3 +1,5 @@
+const DOOM_HAPPY = 'happy';
+const DOOM_ANGRY = 'angry';
 
 
   //================================//
@@ -55,6 +57,8 @@ function resetTimer() {
     timeBegan = null;
     timeStopped = null;
     elTimer.innerHTML = "000";
+    elTimer.style.fontSize = "unset";
+    if (elTimer.classList.contains('new-best-score-timer')) elTimer.classList.remove('new-best-score-timer');
 }
 
 function clockRunning() {
@@ -86,6 +90,29 @@ function shuffle(a) {
     return a;
 }
 
+
+function setMines() {
+
+    var minesIdxVault = [];
+    var newIdx = Math.floor(Math.random() * Math.pow(gLevel.SIZE, 2));
+
+    for (var i = 0; i < gLevel.MINES; i++) {
+
+        while (minesIdxVault.includes(newIdx)) {
+            // console.log('IDX:', newIdx);
+
+            newIdx = Math.floor(Math.random() * Math.pow(gLevel.SIZE, 2));
+        }
+        minesIdxVault.push(newIdx);
+        // console.log(minesIdxVault);
+    }
+
+    console.log(minesIdxVault);
+
+    return minesIdxVault;
+}
+
+
 function checkBombsAround() {
 
     var bombCount = 0;
@@ -113,7 +140,7 @@ function checkBombsAround() {
 
             shulaBoard[i][j] = (bombCount) ? bombCount : SPACE;
 
-            console.log(`shulaBoard[${i}][${j}] has ${bombCount} bombs around him`);
+            // console.log(`shulaBoard[${i}][${j}] has ${bombCount} bombs around him`);
             bombCount = 0;
         };
     };
@@ -126,12 +153,15 @@ function recOpenEmptySpots (spot, allEmptySpots, checkedSpotsIdx, lastSpot = fal
         spot.j < 0 || spot.j >= gLevel.SIZE) return;
 
     if(isPresentIdx(spot, checkedSpotsIdx)) return; 
+    
+    var elVisitedNum = document.querySelector(`.in${spot.i}-${spot.j} span`);
+    if(!elVisitedNum.classList.contains('covered')) return;
 
     checkedSpotsIdx.push(spot);
 
-    console.log(`SPOT`, spot);
-    console.log('ALL EMPTY:', allEmptySpots);
-    console.log('ALL CHECKED:',allEmptySpots);
+    // console.log(`SPOT`, spot);
+    // console.log('ALL EMPTY:', allEmptySpots);
+    // console.log('ALL CHECKED:',allEmptySpots);
     
 
     if(shulaBoard[spot.i][spot.j] != SPACE){
@@ -169,7 +199,7 @@ function getIdxs (idx) {
 }
 
 function isPresentIdx (spot, checkedIdxs) {
-    console.log(spot);
+    // console.log(spot);
     
     if(checkedIdxs.length != undefined) {
 
@@ -190,8 +220,126 @@ function uncoverAllAdjEmpty(uncoveredIdxs) {
 
         var elParentToUncover = document.querySelector(`.in${uncoveredIdxs[i].i}-${uncoveredIdxs[i].j}`);
         var elToUncover = document.querySelector(`.in${uncoveredIdxs[i].i}-${uncoveredIdxs[i].j} span`);
+        var valueUncovered = elToUncover.innerHTML;
 
-        elParentToUncover.style.background = 'white';
+        if(parseInt(valueUncovered) > 0) elParentToUncover.style.background = 'lightgrey';
+        else elParentToUncover.style.background = 'white';
         elToUncover.classList.remove('covered');
     }
+}
+
+function initTiltBoard() {
+
+    var tiltSpans = document.querySelectorAll(".outter-span");
+    var innerTiltSpans = document.querySelectorAll(".num-cell");
+
+    VanillaTilt.init(tiltSpans, {
+
+        max: (gLevel.DIFF === 3) ? 15 : 20,
+        speed: 500,
+        glare: (gLevel.DIFF < 3) ? true : false,
+        reverse: (gLevel.DIFF === 3) ? true : false,
+
+    });
+
+    VanillaTilt.init(innerTiltSpans, {
+        // reset: gLevel.DIFF > 2 ? false : true,
+        // glare: true,
+        // "max-glare": 0.1,
+    });
+
+}
+
+function animateDoomShula(animateTo, hult = false) {
+
+    var elDoomShula = document.querySelector(".doom-shula");
+    
+    if (!(animateTo === 'random')) {
+
+        elDoomShula.src = `assets/doomguy-${animateTo}.png`;
+    }
+
+
+    if(hult) {
+
+        if(gCount === gGame.shownCount) {
+
+            elDoomShula.style.filter = "invert(1)";
+        } else {
+            
+            elDoomShula.style.filter = "grayscale(1)";
+        }
+    } else {
+
+        var randomGuy = (Math.ceil(Math.random() * 2)) ? 'interested' : 'looking';
+        console.log(randomGuy);
+        
+        if(animateTo === 'random') {
+
+            doomShulaInterval = setInterval(function () {
+                randomGuy = (Math.floor(Math.random() * 2)) ? 'interested' : 'looking';
+                console.log(randomGuy);
+                elDoomShula.src = `assets/doomguy-${randomGuy}.png`;
+                elDoomShula.style.filter = 'unset';
+
+            }, 5000);
+
+        } else {
+
+            setTimeout(function () {
+                
+                elDoomShula.src = `assets/doomguy-${randomGuy}.png`;
+                elDoomShula.style.filter = 'unset';
+            }, 750);
+        }
+    }
+
+    
+}
+
+
+function handleHintsAndSafeClicks (type, spent = 0) {
+
+    var htmlString = '';
+
+    if(type === 'hints' || type === 'both') {
+
+        var elHintsBox = document.querySelector(".hints");
+
+        for(var i = 0; i < gHints - spent; i++) {
+            
+            htmlString += `<img src="assets/hint-lightbulb.png" onClick="handleHintsAndSafeClicks('hints', 1)" class="hint-lightbulb">`;
+        }
+        elHintsBox.innerHTML = htmlString;
+
+        if(spent) {
+            
+            gHints -= 1;
+            showHint();
+        }
+    }
+
+    htmlString = '';
+
+    if(type === 'safeClicks' || type === 'both') {
+
+        var elSafeClickssBox = document.querySelector(".safe-clicks");
+
+        for(var i = 0; i < gSafeClick - spent; i++) {
+            
+            htmlString += `<img src="assets/safe-click-shield.png" onClick="handleHintsAndSafeClicks('safeClicks', 1)" class="safe-clicks-shield">`;
+        }
+        elSafeClickssBox.innerHTML = htmlString;
+
+        if(spent) {
+
+            gSafeClick -= 1;
+            showSafeClick();
+            
+        } 
+    } 
+
+    console.log(`TYPE: ${type} | SPENT: ${spent}`);
+    
+    
 }
