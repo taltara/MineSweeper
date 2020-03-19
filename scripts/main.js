@@ -82,7 +82,7 @@ function fakeStartHandler(eldiffButton = null) {
         resetGLevel(eldiffButton);
     }
     animateDoomShula('random');
-
+    hintModeOn = manualMinesModeOn = false;
     updateLifeStats(0);
     resetTimer();
     renderBoard(getFakeBoard());
@@ -324,7 +324,7 @@ function editMinesHandeler(editMinesButton) {
 }
 
 
-// When the player hits a cell
+// Main handler of user clicks
 function cellClicked(elNum, eventButton) {
 
     var numId = elNum.classList[1];
@@ -418,7 +418,7 @@ function cellClicked(elNum, eventButton) {
 
 }
 
-//
+// Enables re-rendering of past board configuration
 function shulaTimeMachine(elRedoButton) {
 
     if (gGame.shownCount && gGame.isOn && boardTimeMachine.length > 0) {
@@ -464,7 +464,7 @@ function timeMachineStatsRecover() {
     updateLifeStats(-1);
 }
 
-
+// Updates life-related stats
 function updateLifeStats(diff = 0) {
 
     if (diff > 0) {
@@ -478,7 +478,7 @@ function updateLifeStats(diff = 0) {
 
     }
 
-    console.log(gLives);
+    // console.log(gLives);
 
     var htmlLives = '';
     for (var i = 0; i < gLives; i++) {
@@ -490,6 +490,7 @@ function updateLifeStats(diff = 0) {
 
 }
 
+// Reveals all bombs on bombs press
 function revealAllBombs(elPressedBomb) {
 
     for (var i = 0; i < gLevel.SIZE; i++) {
@@ -511,6 +512,7 @@ function revealAllBombs(elPressedBomb) {
     }, 1000);
 }
 
+// Hides all unclicked mines
 function hideAllBombs(elPressedBomb) {
 
     for (var i = 0; i < gLevel.SIZE; i++) {
@@ -530,6 +532,7 @@ function hideAllBombs(elPressedBomb) {
     }
 }
 
+// End game function at win/lose
 function endGame(mine = false) {
 
     gGame.isOn = false;
@@ -551,6 +554,7 @@ function endGame(mine = false) {
     }
 }
 
+// Handler of the 'show hint' mode
 function showHint(elCenterHintSpot) {
 
     hintModeOn = false;
@@ -568,6 +572,7 @@ function showHint(elCenterHintSpot) {
     checkAroundHintSpot(centerIdx)
 }
 
+// Checks around the hinted about spot
 function checkAroundHintSpot(centerHintIdx) {
 
     hintVault = [];

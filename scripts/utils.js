@@ -178,8 +178,6 @@ function setMines() {
         minesIdxVault.push(newIdx);
 
     }
-
-
     return minesIdxVault;
 }
 
@@ -270,7 +268,7 @@ function getIdxs (idx) {
     return {i: parseInt(indexI), j: parseInt(indexJ)};
 }
 
-// finds specific idxs in arrays
+// finds specific idxs in arrays {i: , j: }
 function isPresentIdx (spot, checkedIdxs) {
     
     if(checkedIdxs.length != undefined) {
@@ -286,7 +284,7 @@ function isPresentIdx (spot, checkedIdxs) {
     return false;
 }
 
-// Helper function to 'recOpenEmptySpots' that flips all found empty and bordering spots
+// Helper function to 'recOpenEmptySpots' to flips all found empty and bordering spots
 function uncoverAllAdjEmpty(uncoveredIdxs) {
 
     for(var i = 0; i < uncoveredIdxs.length; i++) {
@@ -307,8 +305,9 @@ function handleHintsAndSafeClicks (type, spent = 0) {
 
     var htmlString = '';
 
-    if(type === 'hints' || type === 'both') {
-
+    if((type === 'hints' || type === 'both') && !hintModeOn) {
+        console.log(hintModeOn);
+        
         var elHintsBox = document.querySelector(".hints");
 
         for(var i = 0; i < gHints - spent; i++) {
