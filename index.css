@@ -249,7 +249,7 @@ body, html {
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
-    
+
     min-width: 8.5rem;
     margin: auto 1vh auto -2.75vh;
     width: 33%;
@@ -268,6 +268,7 @@ body, html {
     flex-wrap: nowrap;
     align-self: flex-start;
     margin: auto;
+    min-width: 10rem;
 }
 
 .safe-clicks {
@@ -276,6 +277,7 @@ body, html {
     flex-wrap: nowrap;
     align-self: flex-end;
     margin: auto;
+    min-width: 10rem;
 }
 
 .safe-clicks-shield {
@@ -288,6 +290,7 @@ body, html {
     flex-direction: column;
     flex-wrap: nowrap;
     justify-content: space-between;
+    min-width: 10rem;
 }
 
 .lives {
@@ -295,6 +298,7 @@ body, html {
     flex-direction: row;
     flex-wrap: nowrap;
     margin: auto;
+    min-width: 10rem;
 }
 
 .heart {
