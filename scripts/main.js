@@ -277,8 +277,6 @@ function resetGame(elStartButton, mode = false, event = null) {
 // Resets animation for selected mines
 function resetManualMineMode() {
 
-    console.log('YOHOO', manualMineVault);
-    
     for (var i = 0; i < manualMineVault.length; i++) {
         
         var tempIdxJ, tempIdxI;
@@ -305,12 +303,15 @@ function setManualMines(newMineSpot) {
 
             manualMineVault.push(newMineIdx);
         }
+        
+        if (manualMineVault.length === gLevel.MINES){
+            setTimeout(function() {
+                document.querySelector('.set-mines-button').style.background = 'unset';
+                resetGame(null, true);
+            }, 200);
+        }
 
-    } else {
-
-        resetGame(null, true);
     }
-
 }
 
 // Handles 'edit minefield' mode
@@ -327,7 +328,7 @@ function editMinesHandeler(editMinesButton) {
         else {
 
             manualMinesModeOn = false;
-            console.log('YOHOO2');
+
             editMinesButton.style.background = 'unset';
             if (manualMineVault.length) resetManualMineMode();
 
