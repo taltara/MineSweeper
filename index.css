@@ -61,7 +61,6 @@ body, html {
     animation: rainbow 9s ease infinite;
     background-size: 1800% 1800%;
     transform: perspective(1000px);
-
     transform-style: preserve-3d;
     z-index: 0;
 }
@@ -110,7 +109,6 @@ body, html {
     color: turquoise;
 }
 
-
 .inner-num {
     min-width: 2vh;
     min-height: 1vh;
@@ -143,7 +141,6 @@ body, html {
     border-radius: 80%; */
     min-width: 5vh;
     flex-basis: auto;
-    
 }
 
 .diffBar {
@@ -243,7 +240,6 @@ body, html {
     background-size: 1800% 1800%;
     border-radius: 31%;
     transition: ease-in;
-
     flex-basis: auto;
     margin-right: 6%;
     max-width: 6rem;
@@ -282,21 +278,18 @@ body, html {
 }
 
 .safe-clicks-shield {
-    
     max-height: 5vh;
     cursor: pointer;
 }
 
 .time-and-lives {
-
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
     justify-content: space-between;
 }
 
-.lives{
-
+.lives {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -304,12 +297,10 @@ body, html {
 }
 
 .heart {
-
     max-width: 5vh;
 }
 
 .edit-panel {
-    
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
@@ -317,20 +308,16 @@ body, html {
     min-width: 25rem;
 }
 
-.set-mines{
-    
+.set-mines {
     max-width: 5vh;
-    
 }
 
 .redo-move {
-    
     max-width: 5vh;
-
 }
 
-.edit-button {
 
+.edit-button {
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -342,6 +329,7 @@ body, html {
 }
 
 /* Animations */
+
 @-webkit-keyframes rainbow {
     0% {
         background-position: 0% 82%

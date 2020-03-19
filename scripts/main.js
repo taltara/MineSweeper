@@ -418,12 +418,12 @@ function cellClicked(elNum, eventButton) {
 
 }
 
+//
 function shulaTimeMachine(elRedoButton) {
 
     if (gGame.shownCount && gGame.isOn && boardTimeMachine.length > 0) {
 
         elRedoButton.style.background = 'red';
-
         setTimeout(function () {
 
             elRedoButton.style.background = 'unset';
@@ -436,6 +436,7 @@ function shulaTimeMachine(elRedoButton) {
     }
 }
 
+// Recovers game stats to previous position
 function timeMachineStatsRecover() {
 
     var minesCount = 0, shownCells = 0;
@@ -454,9 +455,6 @@ function timeMachineStatsRecover() {
 
                 if (tempCellInner.innerHTML === MINE) minesCount += 1;
             }
-
-
-
         }
     }
 
