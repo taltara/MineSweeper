@@ -13,7 +13,7 @@ function updateScore() {
 
     bestScore = (bestScore === null) ? Infinity : parseFloat(bestScore);
 
-    console.log(`BEST:`, bestScore, ` | CURRENT:`, gTime);
+    // console.log(`BEST:`, bestScore, ` | CURRENT:`, gTime);
 
     if (gTime < bestScore) {
 
@@ -99,15 +99,13 @@ function setMines() {
     for (var i = 0; i < gLevel.MINES; i++) {
 
         while (minesIdxVault.includes(newIdx)) {
-            // console.log('IDX:', newIdx);
 
             newIdx = Math.floor(Math.random() * Math.pow(gLevel.SIZE, 2));
         }
         minesIdxVault.push(newIdx);
-        // console.log(minesIdxVault);
+
     }
 
-    console.log(minesIdxVault);
 
     return minesIdxVault;
 }
@@ -272,17 +270,17 @@ function animateDoomShula(animateTo, hult = false) {
     } else {
 
         var randomGuy = (Math.ceil(Math.random() * 2)) ? 'interested' : 'looking';
-        console.log(randomGuy);
+        // console.log(randomGuy);
         
         if(animateTo === 'random') {
 
             doomShulaInterval = setInterval(function () {
                 randomGuy = (Math.floor(Math.random() * 2)) ? 'interested' : 'looking';
-                console.log(randomGuy);
+                // console.log(randomGuy);
                 elDoomShula.src = `assets/doomguy-${randomGuy}.png`;
                 elDoomShula.style.filter = 'unset';
 
-            }, 5000);
+            }, 3000);
 
         } else {
 
@@ -315,7 +313,7 @@ function handleHintsAndSafeClicks (type, spent = 0) {
         if(spent) {
             
             gHints -= 1;
-            showHint();
+            hintModeOn = true;
         }
     }
 
@@ -338,8 +336,49 @@ function handleHintsAndSafeClicks (type, spent = 0) {
             
         } 
     } 
-
-    console.log(`TYPE: ${type} | SPENT: ${spent}`);
-    
     
 }
+
+function hideAllHints() {
+    setTimeout(function () {
+        var currentSpot;
+        for (var j = 0; j < hintVault.length; j++) {
+
+            currentSpot = hintVault[j];
+            currentSpot.classList.add('covered');
+        }
+    }, 1000);
+}
+
+
+function showSafeClick() {
+
+    var allSafeSpots = [];
+    for (var i = 0; i < gLevel.SIZE; i++) {
+
+        for (var j = 0; j < gLevel.SIZE; j++) {
+
+            var elTempSpot = document.querySelector(`.in${i}-${j} span`);
+            if (elTempSpot.classList.contains(`covered`)) {
+
+                if (shulaBoard[i][j] != MINE) allSafeSpots.push({ i: i, j: j });
+            }
+        }
+    }
+
+    if (allSafeSpots.length) {
+
+        allSafeSpots = shuffle(allSafeSpots);
+
+        var pickedSafeClick = allSafeSpots[0];
+        var elSafeSpot = document.querySelector(`.in${pickedSafeClick.i}-${pickedSafeClick.j}`);
+
+        elSafeSpot.style.filter = 'invert(1)';
+
+        setTimeout(function () {
+            elSafeSpot.style.filter = 'unset';
+        }, 1000);
+    }
+
+}
+

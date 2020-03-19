@@ -18,7 +18,7 @@ body, html {
     margin: 1% auto;
     border: 7px solid white;
     padding: 2px;
-
+    /* filter:  */
 }
 
 .table-start-1 {
@@ -53,7 +53,7 @@ body, html {
     justify-content: center;
     margin: 1px;
     border-radius: 3px;
-
+    /* filter: drop-shadow(black 2px 4px 6px); */
     background-image: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
     -webkit-animation: rainbow 9s ease infinite;
     -z-animation: rainbow 9s ease infinite;
@@ -128,7 +128,7 @@ body, html {
     display: flex;
     flex-wrap: nowrap;
     flex-direction: column;
-    width: fit-content;
+    width: auto;
     align-items: center;
     font-family: 'numberFont', Fallback, sans-serif;
     font-size: 20px;
@@ -137,10 +137,10 @@ body, html {
 
 .zTimer {
     text-align: center;
-    margin: auto 5vh auto 3vh;
+    /* margin: auto 5vh auto 3vh; */
     padding: 2vh;
-    border: 3px solid black;
-    border-radius: 80%;
+    /* border: 3px solid black;
+    border-radius: 80%; */
     min-width: 5vh;
     flex-basis: auto;
     
@@ -222,11 +222,12 @@ body, html {
 .game-hud {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: start;
     /* max-width: 47vh; */
     min-height: 14vh;
     max-height: 14vh;
-    min-width: 20vh;
+    /* min-width: 20vh; */
+    width: 29rem;
     align-items: center;
     padding-bottom: 20px;
 }
@@ -244,7 +245,8 @@ body, html {
     transition: ease-in;
 
     flex-basis: auto;
-    margin-right: 4%;
+    margin-right: 6%;
+    max-width: 6rem;
 }
 
 .hints-and-safeclicks {
@@ -254,12 +256,13 @@ body, html {
     /* min-width: 52px; */
     margin: auto 1vh auto -2.75vh;
     width: 33%;
-    padding: 6% 6% 4% 6%;
+    padding: 6% 7% 4% 1%;
     flex-basis: auto;
 }
 
 .hint-lightbulb {
     max-height: 5vh;
+    cursor: pointer;
 }
 
 .hints {
@@ -267,6 +270,7 @@ body, html {
     flex-direction: row;
     flex-wrap: nowrap;
     align-self: flex-start;
+    margin: auto;
 }
 
 .safe-clicks {
@@ -274,13 +278,70 @@ body, html {
     flex-direction: row;
     flex-wrap: nowrap;
     align-self: flex-end;
+    margin: auto;
 }
 
 .safe-clicks-shield {
-
+    
     max-height: 5vh;
+    cursor: pointer;
 }
 
+.time-and-lives {
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+
+.lives{
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    margin: auto;
+}
+
+.heart {
+
+    max-width: 5vh;
+}
+
+.edit-panel {
+    
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    min-width: 25rem;
+}
+
+.set-mines{
+    
+    max-width: 5vh;
+    
+}
+
+.redo-move {
+    
+    max-width: 5vh;
+
+}
+
+.edit-button {
+
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    /* background-color: silver; */
+}
+
+.edit-button:focus {
+    outline: 0;
+}
+
+/* Animations */
 @-webkit-keyframes rainbow {
     0% {
         background-position: 0% 82%

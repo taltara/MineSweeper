@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    
+
     <div class="container">
 
         <div class="game-hud">
@@ -20,11 +20,28 @@
                 <div class="safe-clicks"></div>
             </div>
             <img src="assets/doomguy-interested.png" class="doom-shula">
-            <div class="zTimer">000</div>
+            <div class="time-and-lives">
+                <div class="zTimer">000</div>
+                <div class="lives">
+
+                </div>
+            </div>
         </div>
+        <div class="edit-panel">
+            <button onclick="shulaTimeMachine(this)" class="edit-button redo-button">
+                <img src="assets/undo-button.png" class="redo-move">
+            </button>
+            <button onclick="editMinesHandeler(this)" class="edit-button set-mines-button">
+                <img src="assets/edit-pencil.png" class="set-mines">
+            </button>
+
+        </div>
+
         <div class="table">
 
         </div>
+
+
         <div class="diffBar">
             <button class="diffButton diff1" onclick="fakeStart(this)">4x4</button>
             <button class="diffButton diff2" onclick="fakeStart(this)">8x8</button>
