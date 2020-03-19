@@ -167,7 +167,7 @@ function renderBoard(numsBoard, safeSpot = null, event = null) {
                 }
             }
 
-            strHtml += `<span class="span${gCount} outter-span" data-tilt><div ${functionMode} class="num-cell cell${gCount} num-cell-${gLevel.DIFF} in${i}-${j}" data-tilt>
+            strHtml += `<span class="span${gCount} outter-span" data-tilt><div ${functionMode} class="num-cell cell${gCount} num-cell-${gLevel.DIFF} in${i}-${j}">
             <span class="inner-num covered ${classAdd}">${numsBoard[i][j]}</span>
             </div></span>`;
 
