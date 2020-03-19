@@ -220,11 +220,11 @@ body, html {
     display: flex;
     flex-direction: row;
     justify-content: start;
-    /* max-width: 47vh; */
+
     min-height: 14vh;
     max-height: 14vh;
-    /* min-width: 20vh; */
-    width: 29rem;
+    min-width: 26rem;
+ 
     align-items: center;
     padding-bottom: 20px;
 }
@@ -249,7 +249,8 @@ body, html {
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
-    /* min-width: 52px; */
+    
+    min-width: 8.5rem;
     margin: auto 1vh auto -2.75vh;
     width: 33%;
     padding: 6% 7% 4% 1%;
