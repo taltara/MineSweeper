@@ -6,14 +6,12 @@ const DOOM_ANGRY = 'angry';
  //    SCORE HANDELING FUNCTIONS   //
 //================================//
 
-
+// Handles updating local storage scores
 function updateScore() {
 
     var bestScore = localStorage.getItem(`bestScore${gLevel.DIFF}`);
 
     bestScore = (bestScore === null) ? Infinity : parseFloat(bestScore);
-
-    // console.log(`BEST:`, bestScore, ` | CURRENT:`, gTime);
 
     if (gTime < bestScore) {
 
@@ -41,7 +39,6 @@ function startTime() {
     if (timeStopped !== null) {
         stoppedDuration += (new Date() - timeStopped);
     }
-    // console.log(stoppedDuration);
 
     startedTimer = setInterval(clockRunning, 10);
 }
@@ -75,10 +72,85 @@ function clockRunning() {
 };
 
 
+  //====================================//
+ //    ANIMATION HANDELING FUNCTIONS   //
+//====================================//
+
+// Initializes 'Vanillatilt' for cell animation
+function initTiltBoard() {
+
+    var tiltSpans = document.querySelectorAll(".outter-span");
+    var innerTiltSpans = document.querySelectorAll(".num-cell");
+
+    VanillaTilt.init(tiltSpans, {
+
+        max: (gLevel.DIFF === 3) ? 15 : 20,
+        speed: 500,
+        glare: (gLevel.DIFF < 3) ? true : false,
+        reverse: (gLevel.DIFF === 3) ? true : false,
+
+    });
+
+    VanillaTilt.init(innerTiltSpans, {
+        // reset: gLevel.DIFF > 2 ? false : true,
+        // glare: true,
+        // "max-glare": 0.1,
+    });
+
+}
+
+// Handler of all 'DoomGuy' animation
+function animateDoomShula(animateTo, hult = false) {
+
+    var elDoomShula = document.querySelector(".doom-shula");
+    
+    if (!(animateTo === 'random')) {
+
+        elDoomShula.src = `assets/doomguy-${animateTo}.png`;
+    }
+
+
+    if(hult) {
+
+        if(gCount === gGame.shownCount) {
+
+            elDoomShula.style.filter = "invert(1)";
+        } else {
+            
+            elDoomShula.style.filter = "grayscale(1)";
+        }
+    } else {
+
+        var randomGuy = (Math.ceil(Math.random() * 2)) ? 'interested' : 'looking';
+        
+        if(animateTo === 'random') {
+
+            doomShulaInterval = setInterval(function () {
+                randomGuy = (Math.floor(Math.random() * 2)) ? 'interested' : 'looking';
+
+                elDoomShula.src = `assets/doomguy-${randomGuy}.png`;
+                elDoomShula.style.filter = 'unset';
+
+            }, 2000);
+
+        } else {
+
+            setTimeout(function () {
+                
+                elDoomShula.src = `assets/doomguy-${randomGuy}.png`;
+                elDoomShula.style.filter = 'unset';
+            }, 750);
+        }
+    }
+    
+}
+
+
   //================================//
  //    MISCELLANEOUS FUNCTIONS     //
 //================================//
 
+// shuffle function for randomizing arrays
 function shuffle(a) {
     var j, x, i;
     for (i = a.length - 1; i > 0; i--) {
@@ -91,6 +163,7 @@ function shuffle(a) {
 }
 
 
+// Sets random mines for shula board
 function setMines() {
 
     var minesIdxVault = [];
@@ -110,7 +183,7 @@ function setMines() {
     return minesIdxVault;
 }
 
-
+// Checks for surrounding bombs
 function checkBombsAround() {
 
     var bombCount = 0;
@@ -138,30 +211,29 @@ function checkBombsAround() {
 
             shulaBoard[i][j] = (bombCount) ? bombCount : SPACE;
 
-            // console.log(`shulaBoard[${i}][${j}] has ${bombCount} bombs around him`);
             bombCount = 0;
         };
     };
 }
 
-
+// Recursive function for finding all connected empty spots and border 
 function recOpenEmptySpots (spot, allEmptySpots, checkedSpotsIdx, lastSpot = false) {
     
+    // return rule if idxs aren't valid
     if(spot.i < 0 || spot.i >= gLevel.SIZE ||
         spot.j < 0 || spot.j >= gLevel.SIZE) return;
 
+    // return rule for already checked spots
     if(isPresentIdx(spot, checkedSpotsIdx)) return; 
     
+    // return rule for alread fliped spots
     var elVisitedNum = document.querySelector(`.in${spot.i}-${spot.j} span`);
     if(!elVisitedNum.classList.contains('covered')) return;
 
+    // adding the spot to all checked spots vault
     checkedSpotsIdx.push(spot);
-
-    // console.log(`SPOT`, spot);
-    // console.log('ALL EMPTY:', allEmptySpots);
-    // console.log('ALL CHECKED:',allEmptySpots);
     
-
+    // adding border numbers to the empty vault with a check for past empty spot origin
     if(shulaBoard[spot.i][spot.j] != SPACE){
 
         if(lastSpot) allEmptySpots.push(spot);
@@ -169,16 +241,18 @@ function recOpenEmptySpots (spot, allEmptySpots, checkedSpotsIdx, lastSpot = fal
         return;
     } 
 
+    // pushing empty spots to vault
     allEmptySpots.push(spot);
     lastSpot = true;
    
+    // recursively going to all sides (up -> left -> right -> back)
     recOpenEmptySpots({i: spot.i - 1, j: spot.j}, allEmptySpots, checkedSpotsIdx, lastSpot);
     recOpenEmptySpots({i: spot.i, j: spot.j - 1}, allEmptySpots, checkedSpotsIdx, lastSpot);
     recOpenEmptySpots({i: spot.i, j: spot.j + 1}, allEmptySpots, checkedSpotsIdx, lastSpot);
     recOpenEmptySpots({i: spot.i + 1, j: spot.j}, allEmptySpots, checkedSpotsIdx, lastSpot);
 }
 
-
+// Translation function for getting indexes from class
 function getIdxs (idx) {
 
     var seperatorIdx;
@@ -196,8 +270,8 @@ function getIdxs (idx) {
     return {i: parseInt(indexI), j: parseInt(indexJ)};
 }
 
+// finds specific idxs in arrays
 function isPresentIdx (spot, checkedIdxs) {
-    // console.log(spot);
     
     if(checkedIdxs.length != undefined) {
 
@@ -212,6 +286,7 @@ function isPresentIdx (spot, checkedIdxs) {
     return false;
 }
 
+// Helper function to 'recOpenEmptySpots' that flips all found empty and bordering spots
 function uncoverAllAdjEmpty(uncoveredIdxs) {
 
     for(var i = 0; i < uncoveredIdxs.length; i++) {
@@ -226,76 +301,8 @@ function uncoverAllAdjEmpty(uncoveredIdxs) {
     }
 }
 
-function initTiltBoard() {
 
-    var tiltSpans = document.querySelectorAll(".outter-span");
-    var innerTiltSpans = document.querySelectorAll(".num-cell");
-
-    VanillaTilt.init(tiltSpans, {
-
-        max: (gLevel.DIFF === 3) ? 15 : 20,
-        speed: 500,
-        glare: (gLevel.DIFF < 3) ? true : false,
-        reverse: (gLevel.DIFF === 3) ? true : false,
-
-    });
-
-    VanillaTilt.init(innerTiltSpans, {
-        // reset: gLevel.DIFF > 2 ? false : true,
-        // glare: true,
-        // "max-glare": 0.1,
-    });
-
-}
-
-function animateDoomShula(animateTo, hult = false) {
-
-    var elDoomShula = document.querySelector(".doom-shula");
-    
-    if (!(animateTo === 'random')) {
-
-        elDoomShula.src = `assets/doomguy-${animateTo}.png`;
-    }
-
-
-    if(hult) {
-
-        if(gCount === gGame.shownCount) {
-
-            elDoomShula.style.filter = "invert(1)";
-        } else {
-            
-            elDoomShula.style.filter = "grayscale(1)";
-        }
-    } else {
-
-        var randomGuy = (Math.ceil(Math.random() * 2)) ? 'interested' : 'looking';
-        // console.log(randomGuy);
-        
-        if(animateTo === 'random') {
-
-            doomShulaInterval = setInterval(function () {
-                randomGuy = (Math.floor(Math.random() * 2)) ? 'interested' : 'looking';
-                // console.log(randomGuy);
-                elDoomShula.src = `assets/doomguy-${randomGuy}.png`;
-                elDoomShula.style.filter = 'unset';
-
-            }, 2000);
-
-        } else {
-
-            setTimeout(function () {
-                
-                elDoomShula.src = `assets/doomguy-${randomGuy}.png`;
-                elDoomShula.style.filter = 'unset';
-            }, 750);
-        }
-    }
-
-    
-}
-
-
+// Main handeler for the 'Hints' and 'Safe Clicks' mode
 function handleHintsAndSafeClicks (type, spent = 0) {
 
     var htmlString = '';
@@ -321,13 +328,13 @@ function handleHintsAndSafeClicks (type, spent = 0) {
 
     if(type === 'safeClicks' || type === 'both') {
 
-        var elSafeClickssBox = document.querySelector(".safe-clicks");
+        var elSafeClicksBox = document.querySelector(".safe-clicks");
 
         for(var i = 0; i < gSafeClick - spent; i++) {
             
             htmlString += `<img src="assets/safe-click-shield.png" onClick="handleHintsAndSafeClicks('safeClicks', 1)" class="safe-clicks-shield">`;
         }
-        elSafeClickssBox.innerHTML = htmlString;
+        elSafeClicksBox.innerHTML = htmlString;
 
         if(spent) {
 
@@ -339,6 +346,7 @@ function handleHintsAndSafeClicks (type, spent = 0) {
     
 }
 
+// Hides back all hinted about spots
 function hideAllHints() {
     setTimeout(function () {
         var currentSpot;
@@ -350,7 +358,7 @@ function hideAllHints() {
     }, 1000);
 }
 
-
+// Finds a safe click for the user to click on for 'safe click' mode
 function showSafeClick() {
 
     var allSafeSpots = [];

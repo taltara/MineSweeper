@@ -19,7 +19,7 @@ var timeBegan = null,
 var min, newBestscore = 0;
 var gStart = 0;
 
-var gHints = 3, hintVault = [], gSafeClick = 3, hintModeOn = false, lives = 3;
+var gHints = 3, hintVault = [], gSafeClick = 3, hintModeOn = false, gLives = 3;
 var doomShulaInterval;
 
 var manualMineVault = [], manualMinesModeOn = false;
@@ -27,7 +27,7 @@ var manualMineVault = [], manualMinesModeOn = false;
 var elTimer = document.querySelector('.zTimer');
 var elTable = document.querySelector('.table');
 
-fakeStart();
+fakeStartHandler();
 
 // Disabling right-mouse context menu for wanted behaviour
 
@@ -44,9 +44,10 @@ window.addEventListener('contextmenu', function (event) {
 //=====================//
 
 
+// Creates new fake board
 function getFakeBoard() {
 
-    var fakeBoard = [];
+    var newFakeBoard = [];
 
     for (var i = 0; i < gLevel.SIZE; i++) {
 
@@ -55,18 +56,19 @@ function getFakeBoard() {
 
             fakeBoardRow.push(SPACE);
         }
-        fakeBoard.push(fakeBoardRow);
+        newFakeBoard.push(fakeBoardRow);
     }
-    // console.log(fakeBoard);
-    return fakeBoard;
+
+    return newFakeBoard;
 }
 
 
-
-function fakeStart(eldiffButton = null) {
+// Handles initial board creation for correct animation and assets
+function fakeStartHandler(eldiffButton = null) {
 
     if (eldiffButton) {
 
+        gLives = 3;
         gStart = 0;
         gGame.shownCount = 0;
         elTable.className = 'table';
@@ -80,7 +82,8 @@ function fakeStart(eldiffButton = null) {
         resetGLevel(eldiffButton);
     }
     animateDoomShula('random');
-    updateLifeStats();
+
+    updateLifeStats(0);
     resetTimer();
     renderBoard(getFakeBoard());
 }
@@ -99,6 +102,8 @@ function ensureSafeSpot(minesIdxs, safeSpot) {
     }
 }
 
+// Creates new shula board
+// supports 'edit minefield' and safe-click modes
 function getShulaBoard(level, mineConfig = null) {
 
     var minesIdxs;
@@ -128,7 +133,6 @@ function getShulaBoard(level, mineConfig = null) {
             } else {
                 shulaRow.push(SPACE);
             }
-            // shulaRow.push(i + j + 1);
 
         }
         shulaBoard.push(shulaRow);
@@ -139,7 +143,7 @@ function getShulaBoard(level, mineConfig = null) {
     return shulaBoard;
 }
 
-
+// Renders board/starter fake board for 'first click safe' feature 
 function renderBoard(numsBoard, safeSpot = null, event = null) {
 
     var strHtml = '', classAdd = '', glareStat = '', tiltStat = '30';
@@ -210,7 +214,7 @@ function renderBoard(numsBoard, safeSpot = null, event = null) {
 
 }
 
-
+// resets global level stats
 function resetGLevel(elButton) {
 
     var difficulty = elButton.classList[1];
@@ -221,6 +225,8 @@ function resetGLevel(elButton) {
     else if (gLevel.DIFF === 3) gLevel.SIZE = 12, gLevel.MINES = 20;
 }
 
+// Main reset function for handeling resetting the game
+// supports 'edit minefield' and safe-click modes
 function resetGame(elStartButton, mode = false, event = null) {
 
     if (manualMinesModeOn && manualMineVault.length != gLevel.MINES) {
@@ -241,14 +247,14 @@ function resetGame(elStartButton, mode = false, event = null) {
                 var clickedSafePlace = elStartButton.classList[elStartButton.classList.length - 1];
                 safeSpot = getIdxs(clickedSafePlace);
             }
-            // console.log(safeSpot);
+
         } else {
 
             resetGLevel(elStartButton);
         }
 
         newBestscore = 0;
-        gHints = gSafeClick = lives = 3;
+        gHints = gSafeClick = gLives = 3;
         var elHints = document.querySelector('.hints');
         var elSafeClicks = document.querySelector('.safe-clicks');
 
@@ -268,36 +274,29 @@ function resetGame(elStartButton, mode = false, event = null) {
     }
 }
 
+// handles creation of new mine in 'edit minefield' mode
 function setManualMines(newMineSpot) {
 
-    // console.log('BEFORE', manualMineVault, manualMineVault.length);
     var newMineIdx = newMineSpot.classList[newMineSpot.classList.length - 1];
     newMineIdx = getIdxs(newMineIdx);
     newMineIdx = newMineIdx.i * gLevel.SIZE + newMineIdx.j;
-
-
-    // console.log(manualMineVault.length, '??', gLevel.MINES);
 
     if (manualMineVault.length < gLevel.MINES) {
 
         if (!(manualMineVault.includes(newMineIdx))) {
 
             manualMineVault.push(newMineIdx);
-            // console.log(manualMineVault);
-
         }
 
     } else {
-        // console.log(manualMineVault, manualMineVault.length);
 
         resetGame(null, true);
     }
-    // debugger;
-    // console.log('AFTER', manualMineVault, manualMineVault.length);
+
 }
 
+// Handles 'edit minefield' mode
 function editMinesHandeler(editMinesButton) {
-    // console.log(editMinesButton);
 
     if (!gGame.shownCount) {
 
@@ -320,8 +319,6 @@ function editMinesHandeler(editMinesButton) {
 // When the player hits a cell
 function cellClicked(elNum, eventButton) {
 
-    // console.log(boardTimeMachine[0]);
-
     var numId = elNum.classList[1];
 
     var elClickedNum = document.querySelector(`.${numId}`);
@@ -329,13 +326,8 @@ function cellClicked(elNum, eventButton) {
 
     if (hintModeOn || manualMinesModeOn) {
 
-        // console.log('GOTCHA');
         if (manualMinesModeOn) {
             elClickedNum.style.filter = 'brightness(0.5)';
-            // setTimeout(function () {
-
-            //     elClickedNum.style.filter = 'unset';
-            // }, 200);
 
             setManualMines(elClickedNum);
 
@@ -348,7 +340,7 @@ function cellClicked(elNum, eventButton) {
 
         var expandingEmptySpots = [];
         var checkedEmptyIdxs = [];
-        // console.log('ELNUM:', elNum, 'NUMID:', numId);
+
 
         if (!(elClickedInnerNum.classList.contains('covered')) || !gGame.isOn) return;
 
@@ -405,17 +397,14 @@ function cellClicked(elNum, eventButton) {
             updateLifeStats(1);
 
             revealAllBombs(elClickedInnerNum);
-            if (!lives) endGame(true);
+            if (!gLives) endGame(true);
             else animateDoomShula('angry');
-            // elClickedInnerNum.classList.remove('covered');
         }
 
         if (gCount === gGame.shownCount) endGame();
 
 
         boardTimeMachine.unshift(document.querySelector('.table').innerHTML);
-        // console.log(boardTimeMachine);
-        
 
     }
 
@@ -448,7 +437,6 @@ function timeMachineStatsRecover() {
         for (var j = 0; j < gLevel.SIZE; j++) {
 
             var tempCell = document.querySelector(`.in${i}-${j}`);
-            // console.log(tempCell);
 
             var tempCellInner = document.querySelector(`.in${i}-${j} span`);
 
@@ -464,13 +452,9 @@ function timeMachineStatsRecover() {
         }
     }
 
-    // console.log('BEFORE - SHOW:', shownCells, '| MINES:', minesCount);
-    // console.log('BEFORE - SHOW:', gGame.shownCount, '| LIVES:', lives);
-
     gGame.shownCount = shownCells;
-    lives = 3 - minesCount;
+    gLives = 3 - minesCount;
 
-    // console.log('AFTER - SHOW:', gGame.shownCount, '| LIVES:', lives);
     updateLifeStats(-1);
 }
 
@@ -481,17 +465,17 @@ function updateLifeStats(diff = 0) {
 
         if (diff) {
 
-            lives -= diff;
+            gLives -= diff;
         } else if (diff === 0) {
-            lives = 3;
+            gLives = 3;
         }
 
     }
 
-    // console.log('LIVES:', lives);
-
+    console.log(gLives);
+    
     var htmlLives = '';
-    for (var i = 0; i < lives; i++) {
+    for (var i = 0; i < gLives; i++) {
 
         htmlLives += `<img src="assets/heart.png" class="heart">`;
     }
@@ -568,7 +552,7 @@ function showHint(elCenterHintSpot) {
     centerIdx = getIdxs(centerIdx);
 
     var centerHintSpot = document.querySelector(`.in${centerIdx.i}-${centerIdx.j} span`);
-    // console.log(centerHintSpot);
+
     centerHintSpot.classList.remove('covered');
     setTimeout(function () {
 
@@ -604,7 +588,7 @@ function checkAroundHintSpot(centerHintIdx) {
     };
 
     var currentSpot;
-    // console.log(hintVault);
+
     for (var i = 0; i < hintVault.length; i++) {
 
         currentSpot = hintVault[i];
