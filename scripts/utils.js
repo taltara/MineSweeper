@@ -280,7 +280,7 @@ function animateDoomShula(animateTo, hult = false) {
                 elDoomShula.src = `assets/doomguy-${randomGuy}.png`;
                 elDoomShula.style.filter = 'unset';
 
-            }, 3000);
+            }, 2000);
 
         } else {
 
