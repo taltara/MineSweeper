@@ -209,7 +209,7 @@ function renderBoard(numsBoard, safeSpot = null, event = null) {
     }
 
     boardTimeMachine.unshift(document.querySelector('.table').innerHTML);
-    
+
     if (!gStart) gStart = 1
 
 }
@@ -274,6 +274,24 @@ function resetGame(elStartButton, mode = false, event = null) {
     }
 }
 
+// Resets animation for selected mines
+function resetManualMineMode() {
+
+    console.log('YOHOO', manualMineVault);
+    
+    for (var i = 0; i < manualMineVault.length; i++) {
+        
+        var tempIdxJ, tempIdxI;
+        tempIdxI = parseInt(manualMineVault[i] / gLevel.SIZE);
+        tempIdxJ = manualMineVault[i] % gLevel.SIZE;
+
+        var tempSpot = document.querySelector(`.in${tempIdxI}-${tempIdxJ}`);
+        console.log(tempSpot);
+        
+        tempSpot.style.filter = 'unset';
+    }
+}
+
 // handles creation of new mine in 'edit minefield' mode
 function setManualMines(newMineSpot) {
 
@@ -309,7 +327,9 @@ function editMinesHandeler(editMinesButton) {
         else {
 
             manualMinesModeOn = false;
+            console.log('YOHOO2');
             editMinesButton.style.background = 'unset';
+            if (manualMineVault.length) resetManualMineMode();
 
         }
     }
@@ -473,7 +493,7 @@ function updateLifeStats(diff = 0) {
     }
 
     console.log(gLives);
-    
+
     var htmlLives = '';
     for (var i = 0; i < gLives; i++) {
 
