@@ -88,6 +88,7 @@ function fakeStartHandler(eldiffButton = null) {
     renderBoard(getFakeBoard());
 }
 
+// Making sure safe spot doesn't have a mine in it
 function ensureSafeSpot(minesIdxs, safeSpot) {
 
     for (var i = 0; i < minesIdxs.length; i++) {
@@ -149,20 +150,6 @@ function renderBoard(numsBoard, safeSpot = null, event = null) {
     var strHtml = '', classAdd = '', glareStat = '', tiltStat = '30';
     var functionMode = (gStart === 1) ? `onmouseup="cellClicked(this, event)"` : `onmouseup="resetGame(this, true, event)"`;
 
-    if (gLevel.DIFF === 3) {
-
-        glareStat = '1';
-        tiltStat = '35';
-
-    } else if (gLevel.DIFF === 2) {
-
-        glareStat = '0.8';
-
-    } else {
-
-        glareStat = '0.6';
-    }
-
     for (var i = 0; i < numsBoard.length; i++) {
 
         strHtml += '<div class="num-row">';
@@ -191,6 +178,7 @@ function renderBoard(numsBoard, safeSpot = null, event = null) {
 
     gCount -= gLevel.MINES;
     elTable.innerHTML = strHtml;
+    if(gStart)boardTimeMachine.unshift(strHtml);
     gGame.isOn = true;
 
     initTiltBoard();
@@ -208,7 +196,6 @@ function renderBoard(numsBoard, safeSpot = null, event = null) {
         gStart = 0;
     }
 
-    boardTimeMachine.unshift(document.querySelector('.table').innerHTML);
 
     if (!gStart) gStart = 1
 
@@ -433,7 +420,7 @@ function cellClicked(elNum, eventButton) {
 
 function shulaTimeMachine(elRedoButton) {
 
-    if (gGame.shownCount && gGame.isOn && boardTimeMachine.length > 2) {
+    if (gGame.shownCount && gGame.isOn && boardTimeMachine.length > 0) {
 
         elRedoButton.style.background = 'red';
 
