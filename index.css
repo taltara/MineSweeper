@@ -62,7 +62,7 @@ body, html {
     background-size: 1800% 1800%;
     transform: perspective(1000px);
     transform-style: preserve-3d;
-    z-index: 0;
+    transition: ease-in 0.1s;
 }
 
 .num-cell-2 {
