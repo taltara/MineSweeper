@@ -130,7 +130,7 @@ body, html {
     align-items: center;
     font-family: 'numberFont', Fallback, sans-serif;
     font-size: 20px;
-    margin: 1vh auto;
+    margin: 2rem auto;
 }
 
 .zTimer {
@@ -237,23 +237,26 @@ body, html {
     max-height: 14vh;
     min-width: 26rem;
     align-items: center;
-    padding-bottom: 20px;
+    padding-bottom: 45px;
 }
 
 .doom-shula {
     width: 50%;
     padding: 8px 6px;
-    /* flex-basis: 50%; */
+
     background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
     -z-animation: rainbow 9s ease infinite;
     -o-animation: rainbow 9s ease infinite;
     animation: rainbow 9s ease infinite;
     background-size: 1800% 1800%;
+
     border-radius: 31%;
     transition: ease-in;
     flex-basis: auto;
-    margin-right: 6%;
+    margin-right: 3rem;
     max-width: 6rem;
+
+    cursor: pointer;
 }
 
 .hints-and-safeclicks {
@@ -261,9 +264,10 @@ body, html {
     flex-direction: column;
     flex-wrap: nowrap;
     min-width: 8.5rem;
-    margin: auto 1vh auto -2.75vh;
+    /* margin: auto 1vh auto -2.75vh; */
     width: 33%;
-    padding: 6% 7% 4% 1%;
+    /* padding: 6% 7% 4% 1%; */
+    margin-right: 2.5rem;
     flex-basis: auto;
 }
 
@@ -324,12 +328,14 @@ body, html {
 }
 
 .set-mines {
-    max-width: 5vh;
+    max-width: 2.5rem;
+    max-height: 2.5rem;
     
 }
 
 .redo-move {
-    max-width: 5vh;
+    max-width: 2.5rem;
+    max-height: 2.5rem;
 }
 
 .edit-button {

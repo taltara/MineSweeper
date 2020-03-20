@@ -23,6 +23,7 @@ var gHints = 3, hintVault = [], gSafeClick = 3, hintModeOn = false, gLives = 3;
 var doomShulaInterval;
 
 var manualMineVault = [], manualMinesModeOn = false;
+var gMinesIdx = [];
 
 var elTimer = document.querySelector('.zTimer');
 var elTable = document.querySelector('.table');
@@ -68,19 +69,20 @@ function fakeStartHandler(eldiffButton = null) {
 
     if (eldiffButton) {
 
-        gLives = 3;
-        gStart = 0;
-        gGame.shownCount = 0;
-        elTable.className = 'table';
-        gGame.isOn = false;
-        document.querySelector('.hints').innerHTML = '';
-        document.querySelector('.safe-clicks').innerHTML = '';
-
-        clearInterval(doomShulaInterval);
-        doomShulaInterval = null;
-
         resetGLevel(eldiffButton);
     }
+
+    gLives = 3;
+    gStart = 0;
+    gGame.shownCount = 0;
+    elTable.className = 'table';
+    gGame.isOn = false;
+    document.querySelector('.hints').innerHTML = '';
+    document.querySelector('.safe-clicks').innerHTML = '';
+
+    if (doomShulaInterval) clearInterval(doomShulaInterval);
+    doomShulaInterval = null;
+
     animateDoomShula('random');
     hintModeOn = manualMinesModeOn = false;
     updateLifeStats(0);
@@ -178,7 +180,7 @@ function renderBoard(numsBoard, safeSpot = null, event = null) {
 
     gCount -= gLevel.MINES;
     elTable.innerHTML = strHtml;
-    if(gStart)boardTimeMachine.unshift(strHtml);
+    if (gStart) boardTimeMachine.unshift(strHtml);
     gGame.isOn = true;
 
     initTiltBoard();
@@ -265,14 +267,14 @@ function resetGame(elStartButton, mode = false, event = null) {
 function resetManualMineMode() {
 
     for (var i = 0; i < manualMineVault.length; i++) {
-        
+
         var tempIdxJ, tempIdxI;
         tempIdxI = parseInt(manualMineVault[i] / gLevel.SIZE);
         tempIdxJ = manualMineVault[i] % gLevel.SIZE;
 
         var tempSpot = document.querySelector(`.in${tempIdxI}-${tempIdxJ}`);
         console.log(tempSpot);
-        
+
         tempSpot.style.filter = 'unset';
     }
 }
@@ -290,9 +292,9 @@ function setManualMines(newMineSpot) {
 
             manualMineVault.push(newMineIdx);
         }
-        
-        if (manualMineVault.length === gLevel.MINES){
-            setTimeout(function() {
+
+        if (manualMineVault.length === gLevel.MINES) {
+            setTimeout(function () {
                 document.querySelector('.set-mines-button').style.background = 'unset';
                 resetGame(null, true);
             }, 200);
@@ -405,11 +407,22 @@ function cellClicked(elNum, eventButton) {
             updateLifeStats(1);
 
             revealAllBombs(elClickedInnerNum);
-            if (!gLives) endGame(true);
-            else animateDoomShula('angry');
+            if (!gLives) {
+                endGame(true);
+            }
+            else {
+
+                animateDoomShula('angry');
+            }
+            var pressedMineIdx = getIdxs(elNum.classList[elNum.classList.length - 1]);
+            gMinesIdx.push(pressedMineIdx.i * gLevel.SIZE + pressedMineIdx.j);
         }
 
-        if (gCount === gGame.shownCount) endGame();
+        // on win
+        if (gCount === gGame.shownCount) {
+            flagAllMinesOnWin();
+            endGame();
+        }
 
 
         boardTimeMachine.unshift(document.querySelector('.table').innerHTML);
@@ -522,7 +535,7 @@ function hideAllBombs(elPressedBomb) {
             if (shulaBoard[i][j] === MINE) {
 
                 var elBomb = document.querySelector(`.in${i}-${j} span`);
-                if (elPressedBomb != elBomb) {
+                if (!gMinesIdx.includes(i * gLevel.SIZE + j)) {
 
                     elBomb.classList.add('covered');
                 }
@@ -551,7 +564,30 @@ function endGame(mine = false) {
     } else {
         console.log('BIP BOOP BOP - YOU ARE DEAD');
         animateDoomShula(DOOM_ANGRY, true);
+
     }
+}
+
+function flagAllMinesOnWin() {
+
+    for (var i = 0; i < gLevel.SIZE; i++) {
+
+        for (var j = 0; j < gLevel.SIZE; j++) {
+
+            if (shulaBoard[i][j] === MINE) {
+
+                var mineCover = document.querySelector(`.in${i}-${j}`);
+                var mineInnerCover = document.querySelector(`.in${i}-${j} span`);
+
+                if ((mineInnerCover.classList.contains('covered'))) {
+
+                    mineCover.classList.add('flagged');
+                }
+
+            }
+        }
+    }
+
 }
 
 // Handler of the 'show hint' mode
