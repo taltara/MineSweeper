@@ -63,6 +63,7 @@ body, html {
     transform: perspective(1000px);
     transform-style: preserve-3d;
     transition: ease-in 0.1s;
+
 }
 
 .num-cell-2 {

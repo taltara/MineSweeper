@@ -28,6 +28,15 @@ var gMinesIdx = [];
 var elTimer = document.querySelector('.zTimer');
 var elTable = document.querySelector('.table');
 
+
+var clickAudio = new Audio('assets/click.mp3');
+var flagAudio = new Audio('assets/flag.mp3');
+var reFlagAudio = new Audio('assets/re-flag.mp3');
+
+clickAudio.volume = 0.1;
+flagAudio.volume = 0.075;
+reFlagAudio.volume = 0.075;
+
 fakeStartHandler();
 
 // Disabling right-mouse context menu for wanted behaviour
@@ -358,6 +367,7 @@ function cellClicked(elNum, eventButton) {
         if (elClickedNum.classList.contains('flagged')) {
             if (eventButton.which === 3) {
 
+                flagAudio.play();
                 elClickedNum.classList.remove('flagged');
                 gGame.markedCount -= 1;
             }
@@ -367,11 +377,13 @@ function cellClicked(elNum, eventButton) {
 
             if (eventButton.which === 3) {
 
+                reFlagAudio.play();
                 elClickedNum.classList.add('flagged');
                 gGame.markedCount += 1;
                 return;
             }
         }
+        clickAudio.play();
 
         if (!gGame.shownCount) {
             startTime();
