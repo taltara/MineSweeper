@@ -329,14 +329,14 @@ body, html {
 }
 
 .set-mines {
-    max-width: 2.5rem;
-    max-height: 2.5rem;
+    max-width: 3rem;
+    max-height: 3rem;
     
 }
 
 .redo-move {
-    max-width: 2.5rem;
-    max-height: 2.5rem;
+    max-width: 3.5rem;
+    max-height: 3.5rem;
 }
 
 .edit-button {

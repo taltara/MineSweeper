@@ -352,14 +352,27 @@ function cellClicked(elNum, eventButton) {
 
         } else {
 
-            showHint(elClickedNum);
+            if (elClickedInnerNum.classList.contains('covered')) {
+                console.log('GOTHERE');
+
+
+                showHint(elClickedNum);
+            } else {
+
+                elClickedNum.style.filter = 'sepia(1)';
+
+                setTimeout(function () {
+
+                    elClickedNum.style.filter = 'unset';
+                }, 300);
+            }
         }
 
     } else {
 
         var expandingEmptySpots = [];
         var checkedEmptyIdxs = [];
-
+        var touchedMine = false;
 
         if (!(elClickedInnerNum.classList.contains('covered')) || !gGame.isOn) return;
 
@@ -416,6 +429,7 @@ function cellClicked(elNum, eventButton) {
 
         } else { // Pressed a mine
 
+            touchedMine = true;
             updateLifeStats(1);
 
             revealAllBombs(elClickedInnerNum);
@@ -430,14 +444,13 @@ function cellClicked(elNum, eventButton) {
             gMinesIdx.push(pressedMineIdx.i * gLevel.SIZE + pressedMineIdx.j);
         }
 
+        if (!touchedMine) boardTimeMachine.unshift(document.querySelector('.table').innerHTML);
+
         // on win
         if (gCount === gGame.shownCount) {
             flagAllMinesOnWin();
             endGame();
         }
-
-
-        boardTimeMachine.unshift(document.querySelector('.table').innerHTML);
 
     }
 
@@ -478,15 +491,27 @@ function timeMachineStatsRecover() {
 
                 shownCells += 1;
 
-                if (tempCellInner.innerHTML === MINE) minesCount += 1;
+                if (tempCellInner.innerHTML === MINE) {
+
+                    minesCount += 1;
+                }
             }
         }
     }
 
+    // if (!(minesCount === gLevel.MINES)) {
+
     gGame.shownCount = shownCells;
     gLives = 3 - minesCount;
 
+    while (gMinesIdx.length > minesCount) {
+        gMinesIdx.pop();
+    }
+    // console.log(gMinesIdx.length , "||", minesCount);
+
+
     updateLifeStats(-1);
+    // }
 }
 
 // Updates life-related stats
@@ -534,6 +559,7 @@ function revealAllBombs(elPressedBomb) {
     setTimeout(function () {
 
         hideAllBombs(elPressedBomb);
+        boardTimeMachine.unshift(document.querySelector('.table').innerHTML);
     }, 1000);
 }
 
