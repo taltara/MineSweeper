@@ -18,7 +18,7 @@ body, html {
     margin: 1% auto;
     border: 7px solid white;
     padding: 2px;
-    /* filter:  */
+
 }
 
 .table-start-1 {
@@ -268,7 +268,7 @@ body, html {
 }
 
 .hint-lightbulb {
-    max-height: 5vh;
+    max-height: 53px;
     cursor: pointer;
 }
 
@@ -291,7 +291,7 @@ body, html {
 }
 
 .safe-clicks-shield {
-    max-height: 5vh;
+    max-height: 53px;
     cursor: pointer;
 }
 
@@ -312,7 +312,7 @@ body, html {
 }
 
 .heart {
-    max-width: 5vh;
+    max-width: 53px;
 }
 
 .edit-panel {
