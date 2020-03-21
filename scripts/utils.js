@@ -2,8 +2,8 @@ const DOOM_HAPPY = 'happy';
 const DOOM_ANGRY = 'angry';
 
 
-  //================================//
- //    SCORE HANDELING FUNCTIONS   //
+//================================//
+//    SCORE HANDELING FUNCTIONS   //
 //================================//
 
 // Handles updating local storage scores
@@ -27,8 +27,8 @@ function updateScore() {
 }
 
 
-  //================================//
- //    TIME HANDELING FUNCTIONS    //
+//================================//
+//    TIME HANDELING FUNCTIONS    //
 //================================//
 
 function startTime() {
@@ -61,19 +61,19 @@ function resetTimer() {
 function clockRunning() {
     var currentTime = new Date(),
         timeElapsed = new Date(currentTime - timeBegan - stoppedDuration);
-        min = timeElapsed.getUTCMinutes();
-        gTime = timeElapsed.getUTCSeconds();
-        // ms = timeElapsed.getUTCMilliseconds();
+    min = timeElapsed.getUTCMinutes();
+    gTime = timeElapsed.getUTCSeconds();
+    // ms = timeElapsed.getUTCMilliseconds();
 
-    if(min > 0) gTime += 60 * min;
+    if (min > 0) gTime += 60 * min;
     elTimer.innerHTML = (gTime < 10) ? `00${gTime}` : (gTime < 100) ? `0${gTime}` : `${gTime}`;
 
     gGame.secsPassed = gTime;
 };
 
 
-  //====================================//
- //    ANIMATION HANDELING FUNCTIONS   //
+//====================================//
+//    ANIMATION HANDELING FUNCTIONS   //
 //====================================//
 
 // Initializes 'Vanillatilt' for cell animation
@@ -103,28 +103,28 @@ function initTiltBoard() {
 function animateDoomShula(animateTo, hult = false) {
 
     var elDoomShula = document.querySelector(".doom-shula");
-    
+
     if (!(animateTo === 'random')) {
 
         elDoomShula.src = `assets/doomguy-${animateTo}.png`;
     }
 
 
-    if(hult && !(animateTo === 'random')) {
+    if (hult && !(animateTo === 'random')) {
 
-        if(gCount === gGame.shownCount) {
+        if (gCount === gGame.shownCount) {
 
             elDoomShula.style.filter = "invert(1)";
         } else {
-            
+
             elDoomShula.style.filter = "grayscale(1)";
         }
 
     } else {
 
         var randomGuy = (Math.ceil(Math.random() * 2)) ? 'interested' : 'looking';
-        
-        if(animateTo === 'random') {
+
+        if (animateTo === 'random') {
 
             doomShulaInterval = setInterval(function () {
                 randomGuy = (Math.floor(Math.random() * 2)) ? 'interested' : 'looking';
@@ -134,8 +134,8 @@ function animateDoomShula(animateTo, hult = false) {
 
             }, 2000);
 
-            if(hult) {
-                
+            if (hult) {
+
                 elDoomShula.style.filter = 'unset';
                 elDoomShula.src = `assets/doomguy-${randomGuy}.png`;
             }
@@ -143,18 +143,18 @@ function animateDoomShula(animateTo, hult = false) {
         } else {
 
             setTimeout(function () {
-                
+
                 elDoomShula.src = `assets/doomguy-${randomGuy}.png`;
                 elDoomShula.style.filter = 'unset';
             }, 750);
         }
     }
-    
+
 }
 
 
-  //================================//
- //    MISCELLANEOUS FUNCTIONS     //
+//================================//
+//    MISCELLANEOUS FUNCTIONS     //
 //================================//
 
 // shuffle function for randomizing arrays
@@ -197,7 +197,7 @@ function checkBombsAround() {
 
         for (var j = 0; j < gLevel.SIZE; j++) {
 
-            if(shulaBoard[i][j] === MINE) continue;
+            if (shulaBoard[i][j] === MINE) continue;
 
             let indexLeft = i - 1, indexRight = j - 1;
             for (let k = 0; k < 8; k++) {
@@ -207,7 +207,7 @@ function checkBombsAround() {
                     if (shulaBoard[indexLeft][indexRight] === MINE) bombCount += 1;
                 }
 
-                if      (k === 0 || k === 1) indexRight += 1
+                if (k === 0 || k === 1) indexRight += 1
                 else if (k === 2 || k === 3) indexLeft += 1
                 else if (k === 4 || k === 5) indexRight -= 1
                 else if (k === 6) indexLeft -= 1;
@@ -222,71 +222,78 @@ function checkBombsAround() {
 }
 
 // Recursive function for finding all connected empty spots and border 
-function recOpenEmptySpots (spot, allEmptySpots, checkedSpotsIdx, lastSpot = false) {
-    
+function recOpenEmptySpots(spot, allEmptySpots, checkedSpotsIdx, lastSpot = false) {
+
     // return rule if idxs aren't valid
-    if(spot.i < 0 || spot.i >= gLevel.SIZE ||
+    if (spot.i < 0 || spot.i >= gLevel.SIZE ||
         spot.j < 0 || spot.j >= gLevel.SIZE) return;
 
     // return rule for already checked spots
-    if(isPresentIdx(spot, checkedSpotsIdx)) return; 
-    
+    if (isPresentIdx(spot, checkedSpotsIdx)) return;
+
     // return rule for alread fliped spots
     var elVisitedNum = document.querySelector(`.in${spot.i}-${spot.j} span`);
-    if(!elVisitedNum.classList.contains('covered')) return;
+    if (!elVisitedNum.classList.contains('covered')) return;
 
     // adding the spot to all checked spots vault
     checkedSpotsIdx.push(spot);
-    
-    // adding border numbers to the empty vault with a check for past empty spot origin
-    if(shulaBoard[spot.i][spot.j] != SPACE){
 
-        if(lastSpot) allEmptySpots.push(spot);
-    
+    // adding border numbers to the empty vault with a check for past empty spot origin
+    if (shulaBoard[spot.i][spot.j] != SPACE) {
+
+        if (lastSpot) allEmptySpots.push(spot);
+
         return;
-    } 
+    }
 
     // pushing empty spots to vault
     allEmptySpots.push(spot);
     lastSpot = true;
-   
+
     // recursively going to all sides (up -> left -> right -> back)
-    recOpenEmptySpots({i: spot.i - 1, j: spot.j}, allEmptySpots, checkedSpotsIdx, lastSpot);
-    recOpenEmptySpots({i: spot.i, j: spot.j - 1}, allEmptySpots, checkedSpotsIdx, lastSpot);
-    recOpenEmptySpots({i: spot.i, j: spot.j + 1}, allEmptySpots, checkedSpotsIdx, lastSpot);
-    recOpenEmptySpots({i: spot.i + 1, j: spot.j}, allEmptySpots, checkedSpotsIdx, lastSpot);
+    recOpenEmptySpots({ i: spot.i - 1, j: spot.j }, allEmptySpots, checkedSpotsIdx, lastSpot);
+    recOpenEmptySpots({ i: spot.i, j: spot.j - 1 }, allEmptySpots, checkedSpotsIdx, lastSpot);
+    recOpenEmptySpots({ i: spot.i, j: spot.j + 1 }, allEmptySpots, checkedSpotsIdx, lastSpot);
+    recOpenEmptySpots({ i: spot.i + 1, j: spot.j }, allEmptySpots, checkedSpotsIdx, lastSpot);
+    // across
+    recOpenEmptySpots({ i: spot.i - 1, j: spot.j - 1 }, allEmptySpots, checkedSpotsIdx, lastSpot);
+    recOpenEmptySpots({ i: spot.i - 1, j: spot.j + 1 }, allEmptySpots, checkedSpotsIdx, lastSpot);
+    recOpenEmptySpots({ i: spot.i + 1, j: spot.j + 1 }, allEmptySpots, checkedSpotsIdx, lastSpot);
+    recOpenEmptySpots({ i: spot.i + 1, j: spot.j - 1 }, allEmptySpots, checkedSpotsIdx, lastSpot);
+
+    
 }
 
 // Translation function for getting indexes from class
-function getIdxs (idx) {
+function getIdxs(idx) {
 
     var seperatorIdx;
 
-    for(var i = 0; i < idx.length; i++) {
-        if(idx[i] === '-'){
+    for (var i = 0; i < idx.length; i++) {
+        if (idx[i] === '-') {
             seperatorIdx = i;
             break;
-        } 
+        }
     }
 
-    var indexI = idx.slice(2,i);
+    var indexI = idx.slice(2, i);
     var indexJ = idx.slice(i + 1);
 
-    return {i: parseInt(indexI), j: parseInt(indexJ)};
+    return { i: parseInt(indexI), j: parseInt(indexJ) };
 }
 
 // finds specific idxs in arrays {i: , j: }
-function isPresentIdx (spot, checkedIdxs) {
-    
-    if(checkedIdxs.length != undefined) {
+function isPresentIdx(spot, checkedIdxs) {
 
-        for(var i = 0; i < checkedIdxs.length; i++) {
-    
+    if (checkedIdxs.length != undefined) {
+
+        for (var i = 0; i < checkedIdxs.length; i++) {
+
             var tempCheck = checkedIdxs[i];
-            if(spot.i === tempCheck.i && spot.j === tempCheck.j) return true;
+            if (spot.i === tempCheck.i && spot.j === tempCheck.j) return true;
         }
 
-    } 
+    }
 
     return false;
 }
@@ -294,13 +301,13 @@ function isPresentIdx (spot, checkedIdxs) {
 // Helper function to 'recOpenEmptySpots' to flips all found empty and bordering spots
 function uncoverAllAdjEmpty(uncoveredIdxs) {
 
-    for(var i = 0; i < uncoveredIdxs.length; i++) {
+    for (var i = 0; i < uncoveredIdxs.length; i++) {
 
         var elParentToUncover = document.querySelector(`.in${uncoveredIdxs[i].i}-${uncoveredIdxs[i].j}`);
         var elToUncover = document.querySelector(`.in${uncoveredIdxs[i].i}-${uncoveredIdxs[i].j} span`);
         var valueUncovered = elToUncover.innerHTML;
 
-        if(parseInt(valueUncovered) > 0) elParentToUncover.style.background = 'lightgrey';
+        if (parseInt(valueUncovered) > 0) elParentToUncover.style.background = 'lightgrey';
         else elParentToUncover.style.background = 'white';
         elToUncover.classList.remove('covered');
     }
@@ -308,25 +315,25 @@ function uncoverAllAdjEmpty(uncoveredIdxs) {
 
 
 // Main handeler for the 'Hints' and 'Safe Clicks' mode
-function handleHintsAndSafeClicks (type, spent = 0) {
+function handleHintsAndSafeClicks(type, spent = 0) {
 
-    if(!gGame.isOn) return;
+    if (!gGame.isOn) return;
 
     var htmlString = '';
 
-    if((type === 'hints' || type === 'both') && !hintModeOn) {
+    if ((type === 'hints' || type === 'both') && !hintModeOn) {
         console.log(hintModeOn);
-        
+
         var elHintsBox = document.querySelector(".hints");
 
-        for(var i = 0; i < gHints - spent; i++) {
-            
+        for (var i = 0; i < gHints - spent; i++) {
+
             htmlString += `<img src="assets/hint-lightbulb.png" onClick="handleHintsAndSafeClicks('hints', 1)" class="hint-lightbulb">`;
         }
         elHintsBox.innerHTML = htmlString;
 
-        if(spent) {
-            
+        if (spent) {
+
             gHints -= 1;
             hintModeOn = true;
         }
@@ -334,24 +341,24 @@ function handleHintsAndSafeClicks (type, spent = 0) {
 
     htmlString = '';
 
-    if(type === 'safeClicks' || type === 'both') {
+    if (type === 'safeClicks' || type === 'both') {
 
         var elSafeClicksBox = document.querySelector(".safe-clicks");
 
-        for(var i = 0; i < gSafeClick - spent; i++) {
-            
+        for (var i = 0; i < gSafeClick - spent; i++) {
+
             htmlString += `<img src="assets/safe-click-shield.png" onClick="handleHintsAndSafeClicks('safeClicks', 1)" class="safe-clicks-shield">`;
         }
         elSafeClicksBox.innerHTML = htmlString;
 
-        if(spent) {
+        if (spent) {
 
             gSafeClick -= 1;
             showSafeClick();
-            
-        } 
-    } 
-    
+
+        }
+    }
+
 }
 
 // Hides back all hinted about spots

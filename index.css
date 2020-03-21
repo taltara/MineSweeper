@@ -57,9 +57,9 @@ body, html {
 
 .num-cell {
     display: flex;
-    width: 9.5vh;
+    width: 6.3rem;
     min-width: 52px;
-    min-height: 9.5vh;
+    min-height: 6.3rem;
     cursor: pointer;
     align-items: center;
     justify-content: center;
@@ -78,15 +78,15 @@ body, html {
 }
 
 .num-cell-2 {
-    width: 6.5vh;
+    width: 4rem;
     /* min-width: 52px; */
-    min-height: 6.5vh;
+    min-height: 4rem;
 }
 
 .num-cell-3 {
-    width: 4.5vh;
+    width: 3rem;
     /* min-width: 52px; */
-    min-height: 4.5vh;
+    min-height: 3rem;
 }
 
 .num-type-1 {
