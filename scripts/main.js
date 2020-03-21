@@ -13,7 +13,7 @@ var gHints = 3, hintVault = [], gSafeClick = 3, hintModeOn = false, gLives = 3;
 var gStart = 0;
 var gHult = false;
 var gMinesIdx = [];
-
+var gDidTimeMachine = false;
 
 var timeBegan = null,
     timeStopped = null,
@@ -82,7 +82,7 @@ function fakeStartHandler(eldiffButton = null) {
         resetGLevel(eldiffButton);
     }
 
-
+    gDidTimeMachine = false;
     gLives = 3;
     gStart = 0;
     gGame.shownCount = 0;
@@ -325,7 +325,7 @@ function setManualMines(newMineSpot) {
 // Handles 'edit minefield' mode
 function editMinesHandeler(editMinesButton) {
 
-    if (!gGame.shownCount) {
+    if (!gGame.shownCount && !gDidTimeMachine) {
 
         if (!manualMinesModeOn) {
 
@@ -469,10 +469,12 @@ function cellClicked(elNum, eventButton) {
 // Enables re-rendering of past board configuration
 function shulaTimeMachine(elRedoButton) {
 
+    if(!gDidTimeMachine) gDidTimeMachine = true;
+
     if (gGame.shownCount || gMinesIdx.length && gGame.isOn && boardTimeMachine.length > 0) {
 
         elRedoButton.style.filter = 'blur(1px)';
-        elTable.style.filter = 'blur(1px)';
+        elTable.style.filter = 'blur(2px)';
         gHult = true;
         
         setTimeout(function () {
