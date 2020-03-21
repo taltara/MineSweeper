@@ -35,7 +35,11 @@ var clickAudio = new Audio('assets/click.mp3');
 var flagAudio = new Audio('assets/flag.mp3');
 var reFlagAudio = new Audio('assets/re-flag.mp3');
 var reClickAudio = new Audio('assets/re-click.mp3');
+var winAudio = new Audio('assets/gameWin.mp3');
+var loseAudio = new Audio('assets/gameOver.mp3');
 
+winAudio.volume = 0.5;
+loseAudio.volume = 0.5;
 clickAudio.volume = 0.1;
 reClickAudio.volume = 0.1;
 flagAudio.volume = 0.075;
@@ -628,6 +632,7 @@ function endGame(mine = false) {
 
     if (!mine) {
 
+        winAudio.play();
         headerAnimationsHandler(true);
         animateDoomShula(DOOM_HAPPY, true);
         // elTimer.style.fontSize = "50px";
@@ -635,6 +640,7 @@ function endGame(mine = false) {
 
     } else {
 
+        loseAudio.play();
         console.log('BIP BOOP BOP - YOU ARE DEAD');
         headerAnimationsHandler(false);
         animateDoomShula(DOOM_ANGRY, true);
