@@ -1,20 +1,15 @@
 const MINE = `<img class="mine" src="assets/bomb.png">`;
 const SPACE = ' ';
 
+var gGame = { isOn: false, shownCount: 0, markedCount: 0, secsPassed: 0 }
 
 var shulaBoard = [];
 var boardTimeMachine = [];
 
-var gGame = { isOn: false, shownCount: 0, markedCount: 0, secsPassed: 0 }
 var gCount = 0;
 var gLevel = { DIFF: 1, SIZE: 4, MINES: 2 };
 var gTime = 0;
-var gHints = 3, hintVault = [], gSafeClick = 3, hintModeOn = false, gLives = 3;
-var gStart = 0;
-var gHult = false;
-var gMinesIdx = [];
-var gDidTimeMachine = false;
-var gHintsAndSafeClicksStats = [];
+
 
 var timeBegan = null,
     timeStopped = null,
@@ -22,22 +17,15 @@ var timeBegan = null,
     startedTimer = null;
 
 var min, newBestscore = 0;
+var gStart = 0;
 
+var gHints = 3, hintVault = [], gSafeClick = 3, hintModeOn = false, gLives = 3;
 var doomShulaInterval;
 
 var manualMineVault = [], manualMinesModeOn = false;
 
 var elTimer = document.querySelector('.zTimer');
 var elTable = document.querySelector('.table');
-
-// audio files
-var clickAudio = new Audio('assets/click.mp3');
-var flagAudio = new Audio('assets/flag.mp3');
-var reFlagAudio = new Audio('assets/re-flag.mp3');
-
-clickAudio.volume = 0.1;
-flagAudio.volume = 0.075;
-reFlagAudio.volume = 0.075;
 
 fakeStartHandler();
 
@@ -80,24 +68,20 @@ function fakeStartHandler(eldiffButton = null) {
 
     if (eldiffButton) {
 
+        gLives = 3;
+        gStart = 0;
+        gGame.shownCount = 0;
+        elTable.className = 'table';
+        gGame.isOn = false;
+        document.querySelector('.hints').innerHTML = '';
+        document.querySelector('.safe-clicks').innerHTML = '';
+
+        clearInterval(doomShulaInterval);
+        doomShulaInterval = null;
+
         resetGLevel(eldiffButton);
     }
-
-    gDidTimeMachine = false;
-    gHintsAndSafeClicksStats = [];
-    gLives = 3;
-    gStart = 0;
-    gGame.shownCount = 0;
-    elTable.className = 'table';
-    gGame.isOn = false;
-    document.querySelector('.hints').innerHTML = '';
-    document.querySelector('.safe-clicks').innerHTML = '';
-    headerAnimationsHandler(false, true);
-
-    if (doomShulaInterval) clearInterval(doomShulaInterval);
-    doomShulaInterval = null;
-
-    animateDoomShula('random', true);
+    animateDoomShula('random');
     hintModeOn = manualMinesModeOn = false;
     updateLifeStats(0);
     resetTimer();
@@ -179,21 +163,14 @@ function renderBoard(numsBoard, safeSpot = null, event = null) {
 
                 if (numsBoard[i][j] > 0) {
 
-                    classAdd = ` num-type-${numsBoard[i][j]} `;
+                    classAdd = `num-type-${numsBoard[i][j]}`;
                 }
-            } else if (numsBoard[i][j] === MINE) {
-
-                if (gStart) classAdd += ' mine-back '
-            } else {
-
-                if (gStart) classAdd += ' empty-back '
             }
 
             strHtml += `<span class="span${gCount} outter-span" data-tilt><div ${functionMode} class="num-cell cell${gCount} num-cell-${gLevel.DIFF} in${i}-${j}">
             <span class="inner-num covered ${classAdd}">${numsBoard[i][j]}</span>
             </div></span>`;
 
-            classAdd = '';
         }
 
         strHtml += '</div>'
@@ -201,7 +178,7 @@ function renderBoard(numsBoard, safeSpot = null, event = null) {
 
     gCount -= gLevel.MINES;
     elTable.innerHTML = strHtml;
-    if (gStart) boardTimeMachine.unshift(strHtml);
+    if(gStart)boardTimeMachine.unshift(strHtml);
     gGame.isOn = true;
 
     initTiltBoard();
@@ -288,14 +265,14 @@ function resetGame(elStartButton, mode = false, event = null) {
 function resetManualMineMode() {
 
     for (var i = 0; i < manualMineVault.length; i++) {
-
+        
         var tempIdxJ, tempIdxI;
         tempIdxI = parseInt(manualMineVault[i] / gLevel.SIZE);
         tempIdxJ = manualMineVault[i] % gLevel.SIZE;
 
         var tempSpot = document.querySelector(`.in${tempIdxI}-${tempIdxJ}`);
         console.log(tempSpot);
-
+        
         tempSpot.style.filter = 'unset';
     }
 }
@@ -313,10 +290,10 @@ function setManualMines(newMineSpot) {
 
             manualMineVault.push(newMineIdx);
         }
-
-        if (manualMineVault.length === gLevel.MINES) {
-            setTimeout(function () {
-                document.querySelector('.set-mines-button').style.background = 'rgb(152,251,152)';
+        
+        if (manualMineVault.length === gLevel.MINES){
+            setTimeout(function() {
+                document.querySelector('.set-mines-button').style.background = 'unset';
                 resetGame(null, true);
             }, 200);
         }
@@ -327,19 +304,19 @@ function setManualMines(newMineSpot) {
 // Handles 'edit minefield' mode
 function editMinesHandeler(editMinesButton) {
 
-    if (!gGame.shownCount && !gDidTimeMachine) {
+    if (!gGame.shownCount) {
 
         if (!manualMinesModeOn) {
 
             manualMinesModeOn = true;
-            editMinesButton.style.background = 'rgb(127,255,0)';
+            editMinesButton.style.background = 'lightgreen';
 
         }
         else {
 
             manualMinesModeOn = false;
 
-            editMinesButton.style.background = 'rgb(152,251,152)';
+            editMinesButton.style.background = 'unset';
             if (manualMineVault.length) resetManualMineMode();
 
         }
@@ -364,35 +341,21 @@ function cellClicked(elNum, eventButton) {
 
         } else {
 
-            if (elClickedInnerNum.classList.contains('covered')) {
-                // console.log('GOTHERE');
-
-
-                showHint(elClickedNum);
-            } else {
-
-                elClickedNum.style.filter = 'sepia(1)';
-
-                setTimeout(function () {
-
-                    elClickedNum.style.filter = 'unset';
-                }, 300);
-            }
+            showHint(elClickedNum);
         }
 
     } else {
 
-        if (!(elClickedInnerNum.classList.contains('covered')) || !gGame.isOn || gHult) return;
         var expandingEmptySpots = [];
         var checkedEmptyIdxs = [];
-        var touchedMine = false;
 
+
+        if (!(elClickedInnerNum.classList.contains('covered')) || !gGame.isOn) return;
 
         // Flagging right-pressed spots
         if (elClickedNum.classList.contains('flagged')) {
             if (eventButton.which === 3) {
 
-                flagAudio.play();
                 elClickedNum.classList.remove('flagged');
                 gGame.markedCount -= 1;
             }
@@ -402,13 +365,11 @@ function cellClicked(elNum, eventButton) {
 
             if (eventButton.which === 3) {
 
-                reFlagAudio.play();
                 elClickedNum.classList.add('flagged');
                 gGame.markedCount += 1;
                 return;
             }
         }
-        clickAudio.play();
 
         if (!gGame.shownCount) {
             startTime();
@@ -441,31 +402,17 @@ function cellClicked(elNum, eventButton) {
 
         } else { // Pressed a mine
 
-            touchedMine = true;
             updateLifeStats(1);
-            gHult = true;
+
             revealAllBombs(elClickedInnerNum);
-            if (!gLives) {
-                endGame(true);
-            }
-            else {
-
-                animateDoomShula('angry');
-            }
-            var pressedMineIdx = getIdxs(elNum.classList[elNum.classList.length - 1]);
-            gMinesIdx.push(pressedMineIdx.i * gLevel.SIZE + pressedMineIdx.j);
+            if (!gLives) endGame(true);
+            else animateDoomShula('angry');
         }
 
-        if (!touchedMine) {
-            gHintsAndSafeClicksStats.unshift({hints: gHints, safeClicks: gSafeClick});
-            boardTimeMachine.unshift(document.querySelector('.table').innerHTML);
-        }
+        if (gCount === gGame.shownCount) endGame();
 
-        // on win
-        if (gCount === gGame.shownCount) {
-            flagAllMinesOnWin();
-            endGame();
-        }
+
+        boardTimeMachine.unshift(document.querySelector('.table').innerHTML);
 
     }
 
@@ -474,23 +421,15 @@ function cellClicked(elNum, eventButton) {
 // Enables re-rendering of past board configuration
 function shulaTimeMachine(elRedoButton) {
 
-    if(!gDidTimeMachine) gDidTimeMachine = true;
+    if (gGame.shownCount && gGame.isOn && boardTimeMachine.length > 0) {
 
-    if (gGame.shownCount || gMinesIdx.length && gGame.isOn && boardTimeMachine.length > 0) {
-
-        elRedoButton.style.filter = 'blur(1px)';
-        elTable.style.filter = 'blur(2px)';
-        gHult = true;
-        
+        elRedoButton.style.background = 'red';
         setTimeout(function () {
-            
-            elRedoButton.style.filter = 'unset';
-            elTable.style.filter = 'unset';
-            gHult = false;
+
+            elRedoButton.style.background = 'unset';
         }, 300);
 
         boardTimeMachine.shift();
-        gHintsAndSafeClicksStats.shift();
         elTable.innerHTML = boardTimeMachine[0];
 
         timeMachineStatsRecover();
@@ -514,29 +453,15 @@ function timeMachineStatsRecover() {
 
                 shownCells += 1;
 
-                if (tempCellInner.innerHTML === MINE) {
-
-                    minesCount += 1;
-                }
+                if (tempCellInner.innerHTML === MINE) minesCount += 1;
             }
         }
     }
 
-    // if (!(minesCount === gLevel.MINES)) {
-
     gGame.shownCount = shownCells;
     gLives = 3 - minesCount;
 
-    while (gMinesIdx.length > minesCount) {
-        gMinesIdx.pop();
-    }
-
-    gHints = gHintsAndSafeClicksStats[0].hints;
-    gSafeClick = gHintsAndSafeClicksStats[0].safeClicks;
-    handleHintsAndSafeClicks('both');
-
     updateLifeStats(-1);
-    // }
 }
 
 // Updates life-related stats
@@ -584,9 +509,6 @@ function revealAllBombs(elPressedBomb) {
     setTimeout(function () {
 
         hideAllBombs(elPressedBomb);
-        gHintsAndSafeClicksStats.unshift({hints: gHints, safeClicks: gSafeClick});
-        boardTimeMachine.unshift(document.querySelector('.table').innerHTML);
-        gHult = false;
     }, 1000);
 }
 
@@ -600,7 +522,7 @@ function hideAllBombs(elPressedBomb) {
             if (shulaBoard[i][j] === MINE) {
 
                 var elBomb = document.querySelector(`.in${i}-${j} span`);
-                if (!gMinesIdx.includes(i * gLevel.SIZE + j)) {
+                if (elPressedBomb != elBomb) {
 
                     elBomb.classList.add('covered');
                 }
@@ -622,73 +544,14 @@ function endGame(mine = false) {
 
     if (!mine) {
 
-        headerAnimationsHandler(true);
         animateDoomShula(DOOM_HAPPY, true);
         // elTimer.style.fontSize = "50px";
         if (updateScore()) elTimer.classList.add('new-best-score-timer');
 
     } else {
-
         console.log('BIP BOOP BOP - YOU ARE DEAD');
-        headerAnimationsHandler(false);
         animateDoomShula(DOOM_ANGRY, true);
-
     }
-}
-
-// Handles header animations
-function headerAnimationsHandler(won = false, reset = false) {
-
-    var elMinesHeader = document.querySelector('.mines-header');
-    var elShulaHeader = document.querySelector('.shula-header');
-    var elSmallerHeader = document.querySelector('.smaller-header');
-
-    if (!reset) {
-
-        if (won) {
-
-            elShulaHeader.classList.add('win-header');
-
-            elMinesHeader.textContent = '';
-            elSmallerHeader.textContent = '';
-
-        } else {
-
-            elMinesHeader.classList.add('win-header');
-            elShulaHeader.textContent = '';
-            elSmallerHeader.textContent = '';
-        }
-
-    } else {
-
-        elShulaHeader.className = 'shula-header ';
-        elMinesHeader.className = 'mines-header ';
-        elShulaHeader.textContent = 'Shula ';
-        elSmallerHeader.textContent = '& ';
-        elMinesHeader.textContent = 'the mines';
-    }
-}
-
-function flagAllMinesOnWin() {
-
-    for (var i = 0; i < gLevel.SIZE; i++) {
-
-        for (var j = 0; j < gLevel.SIZE; j++) {
-
-            if (shulaBoard[i][j] === MINE) {
-
-                var mineCover = document.querySelector(`.in${i}-${j}`);
-                var mineInnerCover = document.querySelector(`.in${i}-${j} span`);
-
-                if ((mineInnerCover.classList.contains('covered'))) {
-
-                    mineCover.classList.add('flagged');
-                }
-
-            }
-        }
-    }
-
 }
 
 // Handler of the 'show hint' mode
