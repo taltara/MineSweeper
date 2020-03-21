@@ -1,3 +1,7 @@
+/* ===================== */
+/* = CUSTOME FONTS     = */
+/* ===================== */
+
 @font-face {
     font-family: 'numberFont';
     src: url('fonts/jerseym54.woff2') format('woff2'), url('fonts/jerseym54.woff') format('woff'), url('fonts/jerseym54.ttf') format('truetype');
@@ -7,6 +11,10 @@
     font-family: 'mainFont';
     src: url('fonts/toeTheLineless.woff2') format('woff2'), url('fonts/toeTheLineless.woff') format('woff'), url('fonts/toeTheLineless.ttf') format('truetype');
 }
+
+/* ===================== */
+/* = MAIN ELEMENTS     = */
+/* ===================== */
 
 body, html {
     margin: 0;
@@ -24,6 +32,32 @@ body, html {
     margin-left: -0.5rem;
 }
 
+.win-header {
+    background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -z-animation: rainbow 9s ease infinite;
+    -o-animation: rainbow 9s ease infinite;
+    animation: rainbow 9s ease infinite;
+    background-size: 900% 900%;
+}
+
+.mines-header{
+    font-size: xx-large;
+}
+
+.container {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    width: fit-content;
+    align-items: center;
+    font-family: 'numberFont', Fallback, sans-serif;
+    font-size: 20px;
+    margin: 1.5rem auto;
+}
+
 .table {
     display: flex;
     flex-direction: column;
@@ -33,6 +67,10 @@ body, html {
     border: 7px solid white;
     padding: 2px;
 }
+
+/* ===================== */
+/* = TABLE             = */
+/* ===================== */
 
 .table-start-1 {
     border: 7px solid black;
@@ -66,7 +104,7 @@ body, html {
     justify-content: center;
     margin: 1px;
     border-radius: 3px;
-    /* filter: drop-shadow(black 2px 4px 6px); */
+
     background-image: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
     -webkit-animation: rainbow 9s ease infinite;
     -z-animation: rainbow 9s ease infinite;
@@ -80,13 +118,11 @@ body, html {
 
 .num-cell-2 {
     width: 4rem;
-    /* min-width: 52px; */
     min-height: 4rem;
 }
 
 .num-cell-3 {
     width: 3rem;
-    /* min-width: 52px; */
     min-height: 3rem;
 }
 
@@ -126,7 +162,6 @@ body, html {
     min-width: 2vh;
     min-height: 1vh;
     background-color: white;
-    /* border: 3px solid rgba(0, 0, 0, 0.75); */
     border-radius: 24px;
     transform: translateZ(20px);
     font-family: 'numberFont', Fallback, sans-serif;
@@ -135,25 +170,35 @@ body, html {
     padding: 6px;
 }
 
-.container {
-    display: flex;
-    flex-wrap: nowrap;
-    flex-direction: column;
-    width: fit-content;
-    align-items: center;
-    font-family: 'numberFont', Fallback, sans-serif;
-    font-size: 20px;
-    margin: 1.5rem auto;
+.mine {
+    width: 80%;
+    background-color: tomato;
+    border-radius: 5%;
 }
 
-.zTimer {
-    text-align: center;
-    /* margin: auto 5vh auto 3vh; */
-    padding: 2vh;
-    /* border: 3px solid black;
-    border-radius: 80%; */
-    min-width: 5vh;
+.mine-back{
+    
+    background-color: tomato;
 }
+
+.empty-back{
+    
+    background-color: white;
+}
+
+.flagged {
+    background: url('assets/flag.png');
+    background-size: 75%;
+    background-repeat: no-repeat;
+}
+
+.covered {
+    display: none;
+}
+
+/* ===================== */
+/* = DIFFICULTY BAR    = */
+/* ===================== */
 
 .diffBar {
     display: flex;
@@ -166,7 +211,7 @@ body, html {
 .diffButton {
     text-transform: uppercase;
     cursor: pointer;
-    /* padding: 3% 5%; */
+
     display: block;
     margin-top: 2%;
     padding: 1.4% 7%;
@@ -182,7 +227,6 @@ body, html {
     text-align: center;
     border: none;
 }
-
 
 .diff1, .diff3 {
     min-width: 75px;
@@ -216,6 +260,16 @@ body, html {
     background-image: linear-gradient(0deg, #FFE53B 0%, #FF2525 74%);
 }
 
+/* ===================== */
+/* = Timer             = */
+/* ===================== */
+
+.zTimer {
+    text-align: center;
+    padding: 2vh;
+    min-width: 5vh;
+}
+
 .new-best-score-timer {
     background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
     color: white;
@@ -228,31 +282,9 @@ body, html {
     background-size: 1800% 1800%;
 }
 
-.covered {
-    display: none;
-}
-
-.mine {
-    width: 80%;
-    background-color: tomato;
-    border-radius: 5%;
-}
-
-.mine-back{
-    
-    background-color: tomato;
-}
-
-.empty-back{
-    
-    background-color: white;
-}
-
-.flagged {
-    background: url('assets/flag.png');
-    background-size: 75%;
-    background-repeat: no-repeat;
-}
+/* ===================== */
+/* = GAME HUB          = */
+/* ===================== */
 
 .game-hud {
     display: flex;
@@ -342,6 +374,10 @@ body, html {
     max-width: 3.3rem;
 }
 
+/* ===================== */
+/* = EDIT PANEL        = */
+/* ===================== */
+
 .edit-panel {
     display: flex;
     flex-direction: row;
@@ -372,7 +408,6 @@ body, html {
 
 }
 
-
 .edit-button {
     border: none;
     border-radius: 50%;
@@ -392,27 +427,6 @@ body, html {
 
 .edit-button:focus {
     outline: 0;
-}
-
-.win-header {
-    background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    -z-animation: rainbow 9s ease infinite;
-    -o-animation: rainbow 9s ease infinite;
-    animation: rainbow 9s ease infinite;
-    background-size: 900% 900%;
-}
-
-.mines-header{
-
-    font-size: xx-large;
-}
-
-.a-header{
-
-
 }
 
 /* Animations */
