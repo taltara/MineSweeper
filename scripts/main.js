@@ -38,10 +38,10 @@ var reClickAudio = new Audio('assets/re-click.mp3');
 var winAudio = new Audio('assets/gameWin.mp3');
 var loseAudio = new Audio('assets/gameOver.mp3');
 
-winAudio.volume = 0.5;
-loseAudio.volume = 0.5;
+winAudio.volume = 0.15;
+loseAudio.volume = 0.15;
 clickAudio.volume = 0.1;
-reClickAudio.volume = 0.1;
+reClickAudio.volume = 0.2;
 flagAudio.volume = 0.075;
 reFlagAudio.volume = 0.075;
 
@@ -481,7 +481,7 @@ function cellClicked(elNum, eventButton) {
 // Enables re-rendering of past board configuration
 function shulaTimeMachine(elRedoButton) {
 
-    if(!gGame.isOn) return;
+    if(!gGame.isOn || touchedMine) return;
 
     if(!gDidTimeMachine) gDidTimeMachine = true;
 
