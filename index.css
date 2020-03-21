@@ -153,7 +153,6 @@ body, html {
     /* border: 3px solid black;
     border-radius: 80%; */
     min-width: 5vh;
-    flex-basis: auto;
 }
 
 .diffBar {
@@ -276,7 +275,7 @@ body, html {
     background-size: 1800% 1800%;
     border-radius: 31%;
     transition: ease-in;
-    flex-basis: auto;
+
     margin-right: 3rem;
     max-width: 6rem;
     cursor: pointer;
@@ -287,15 +286,16 @@ body, html {
     flex-direction: column;
     flex-wrap: nowrap;
     min-width: 8.5rem;
-    /* margin: auto 1vh auto -2.75vh; */
+
     width: 33%;
-    /* padding: 6% 7% 4% 1%; */
-    margin-right: 2.5rem;
-    flex-basis: auto;
+
+    margin-right: 3.05rem;
+    margin-top: 1rem;
+
 }
 
 .hint-lightbulb {
-    max-height: 53px;
+    max-width: 3.3rem;
     cursor: pointer;
 }
 
@@ -318,7 +318,7 @@ body, html {
 }
 
 .safe-clicks-shield {
-    max-height: 53px;
+    max-width: 3.3rem;
     cursor: pointer;
 }
 
@@ -339,7 +339,7 @@ body, html {
 }
 
 .heart {
-    max-width: 53px;
+    max-width: 3.3rem;
 }
 
 .edit-panel {
