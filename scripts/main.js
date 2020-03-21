@@ -106,6 +106,7 @@ function fakeStartHandler(eldiffButton = null) {
     animateDoomShula('random', true);
     hintModeOn = manualMinesModeOn = false;
     updateLifeStats(0);
+    stopTimer();
     resetTimer();
     renderBoard(getFakeBoard());
 }
