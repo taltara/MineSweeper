@@ -1,13 +1,26 @@
 @font-face {
     font-family: 'numberFont';
-    src: url('fonts/jerseym54.woff2') format('woff2'), /* Super Modern Browsers */
-    url('fonts/jerseym54.woff') format('woff'), /* Pretty Modern Browsers */
-    url('fonts/jerseym54.ttf') format('truetype');
+    src: url('fonts/jerseym54.woff2') format('woff2'), url('fonts/jerseym54.woff') format('woff'), url('fonts/jerseym54.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'mainFont';
+    src: url('fonts/toeTheLineless.woff2') format('woff2'), url('fonts/toeTheLineless.woff') format('woff'), url('fonts/toeTheLineless.ttf') format('truetype');
 }
 
 body, html {
     margin: 0;
     width: 100%;
+}
+
+.main-header {
+    font-family: 'mainFont', Fallback, sans-serif;
+    font-size: 2.5rem;
+}
+
+.smaller-header {
+    font-size: x-large;
+    margin-left: -0.5rem;
 }
 
 .table {
@@ -18,7 +31,6 @@ body, html {
     margin: 1% auto;
     border: 7px solid white;
     padding: 2px;
-
 }
 
 .table-start-1 {
@@ -45,9 +57,9 @@ body, html {
 
 .num-cell {
     display: flex;
-    width: 10vh;
+    width: 9.5vh;
     min-width: 52px;
-    min-height: 10vh;
+    min-height: 9.5vh;
     cursor: pointer;
     align-items: center;
     justify-content: center;
@@ -63,19 +75,18 @@ body, html {
     transform: perspective(1000px);
     transform-style: preserve-3d;
     transition: ease-in 0.1s;
-
 }
 
 .num-cell-2 {
-    width: 8vh;
+    width: 6.5vh;
     /* min-width: 52px; */
-    min-height: 8vh;
+    min-height: 6.5vh;
 }
 
 .num-cell-3 {
-    width: 6vh;
+    width: 4.5vh;
     /* min-width: 52px; */
-    min-height: 6vh;
+    min-height: 4.5vh;
 }
 
 .num-type-1 {
@@ -159,7 +170,7 @@ body, html {
     display: block;
     margin-top: 2%;
     padding: 1.4% 7%;
-    width: 11rem;
+    width: 9rem;
     -webkit-box-shadow: 0px 0px 7px 2px rgba(0, 0, 0, 0.5);
     -moz-box-shadow: 0px 0px 7px 2px rgba(0, 0, 0, 0.5);
     box-shadow: 0px 0px 7px 2px rgba(0, 0, 0, 0.5);
@@ -168,14 +179,17 @@ body, html {
     transition: transform 0.1s;
     font-family: 'numberFont', Fallback, sans-serif;
     font-size: 1.5rem;
+    text-align: center;
+    border: none;
 }
 
-.diff1, .diff2 {
-    min-width: 63px;
-}
 
-.diff3 {
+.diff1, .diff3 {
     min-width: 75px;
+}
+
+.diff2 {
+    min-width: 63px;
 }
 
 .diffButton:focus {
@@ -219,9 +233,19 @@ body, html {
 }
 
 .mine {
-    width: 95%;
+    width: 80%;
     background-color: tomato;
     border-radius: 5%;
+}
+
+.mine-back{
+    
+    background-color: tomato;
+}
+
+.empty-back{
+    
+    background-color: white;
 }
 
 .flagged {
@@ -244,19 +268,16 @@ body, html {
 .doom-shula {
     width: 50%;
     padding: 8px 6px;
-
     background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
     -z-animation: rainbow 9s ease infinite;
     -o-animation: rainbow 9s ease infinite;
     animation: rainbow 9s ease infinite;
     background-size: 1800% 1800%;
-
     border-radius: 31%;
     transition: ease-in;
     flex-basis: auto;
     margin-right: 3rem;
     max-width: 6rem;
-
     cursor: pointer;
 }
 
@@ -281,7 +302,7 @@ body, html {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    align-self: flex-start;
+    justify-content: flex-end;
     margin: auto;
     min-width: 10rem;
 }
@@ -290,7 +311,7 @@ body, html {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    align-self: flex-end;
+    justify-content: flex-end;
     margin: auto;
     min-width: 10rem;
 }
@@ -331,13 +352,24 @@ body, html {
 .set-mines {
     max-width: 3rem;
     max-height: 3rem;
-    
 }
 
 .redo-move {
     max-width: 3.5rem;
     max-height: 3.5rem;
 }
+
+.redo-button {
+
+    background-color: rgb(218,112,214);
+}
+
+.set-mines-button {
+    
+    background-color: rgb(152,251,152);
+
+}
+
 
 .edit-button {
     border: none;
@@ -346,7 +378,6 @@ body, html {
     min-width: 4.5rem;
     min-height: 4.5rem;
     padding: 8px;
-    
     -webkit-box-shadow: 0px 0px 7px 2px rgba(0, 0, 0, 0.5);
     -moz-box-shadow: 0px 0px 7px 2px rgba(0, 0, 0, 0.5);
     box-shadow: 0px 0px 7px 2px rgba(0, 0, 0, 0.5);
@@ -359,6 +390,27 @@ body, html {
 
 .edit-button:focus {
     outline: 0;
+}
+
+.win-header {
+    background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -z-animation: rainbow 9s ease infinite;
+    -o-animation: rainbow 9s ease infinite;
+    animation: rainbow 9s ease infinite;
+    background-size: 900% 900%;
+}
+
+.mines-header{
+
+    font-size: xx-large;
+}
+
+.a-header{
+
+
 }
 
 /* Animations */

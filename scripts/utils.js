@@ -110,7 +110,7 @@ function animateDoomShula(animateTo, hult = false) {
     }
 
 
-    if(hult) {
+    if(hult && !(animateTo === 'random')) {
 
         if(gCount === gGame.shownCount) {
 
@@ -119,6 +119,7 @@ function animateDoomShula(animateTo, hult = false) {
             
             elDoomShula.style.filter = "grayscale(1)";
         }
+
     } else {
 
         var randomGuy = (Math.ceil(Math.random() * 2)) ? 'interested' : 'looking';
@@ -132,6 +133,12 @@ function animateDoomShula(animateTo, hult = false) {
                 elDoomShula.style.filter = 'unset';
 
             }, 2000);
+
+            if(hult) {
+                
+                elDoomShula.style.filter = 'unset';
+                elDoomShula.src = `assets/doomguy-${randomGuy}.png`;
+            }
 
         } else {
 
@@ -302,6 +309,8 @@ function uncoverAllAdjEmpty(uncoveredIdxs) {
 
 // Main handeler for the 'Hints' and 'Safe Clicks' mode
 function handleHintsAndSafeClicks (type, spent = 0) {
+
+    if(!gGame.isOn) return;
 
     var htmlString = '';
 
