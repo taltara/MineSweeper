@@ -34,9 +34,10 @@ var elTable = document.querySelector('.table');
 var clickAudio = new Audio('assets/click.mp3');
 var flagAudio = new Audio('assets/flag.mp3');
 var reFlagAudio = new Audio('assets/re-flag.mp3');
-var reClick = new Audio('assets/re-click.mp3');
+var reClickAudio = new Audio('assets/re-click.mp3');
 
 clickAudio.volume = 0.1;
+reClickAudio.volume = 0.1;
 flagAudio.volume = 0.075;
 reFlagAudio.volume = 0.075;
 
@@ -479,7 +480,7 @@ function shulaTimeMachine(elRedoButton) {
 
     if (gGame.shownCount || gMinesIdx.length && gGame.isOn && boardTimeMachine.length > 0) {
 
-        reClick.play();
+        reClickAudio.play();
         
         elRedoButton.style.filter = 'blur(1px)';
         elTable.style.filter = 'blur(2px)';
