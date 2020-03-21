@@ -170,8 +170,12 @@ function getShulaBoard(level, mineConfig = null) {
 // Renders board/starter fake board for 'first click safe' feature 
 function renderBoard(numsBoard, safeSpot = null, event = null) {
 
-    var strHtml = '', classAdd = '', glareStat = '', tiltStat = '30';
+    var strHtml = '', classAdd = '', glareStat = '', tiltStat = '30', dataTilt = '';
     var functionMode = (gStart === 1) ? `onmouseup="cellClicked(this, event)"` : `onmouseup="resetGame(this, true, event)"`;
+
+    if(gStart) {
+        if(gLevel.DIFF === 3) dataTilt = 'data-tilt-reset = "false"';
+    }
 
     for (var i = 0; i < numsBoard.length; i++) {
 
@@ -196,7 +200,7 @@ function renderBoard(numsBoard, safeSpot = null, event = null) {
                 if (gStart) classAdd += ' empty-back '
             }
 
-            strHtml += `<span class="span${gCount} outter-span" data-tilt><div ${functionMode} class="num-cell cell${gCount} num-cell-${gLevel.DIFF} in${i}-${j}">
+            strHtml += `<span class="span${gCount} outter-span" data-tilt ${dataTilt}><div ${functionMode} class="num-cell cell${gCount} num-cell-${gLevel.DIFF} in${i}-${j}">
             <span class="inner-num covered ${classAdd}">${numsBoard[i][j]}</span>
             </div></span>`;
 
