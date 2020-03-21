@@ -322,7 +322,7 @@ function handleHintsAndSafeClicks(type, spent = 0) {
     var htmlString = '';
 
     if ((type === 'hints' || type === 'both') && !hintModeOn) {
-        console.log(hintModeOn);
+        // console.log(hintModeOn);
 
         var elHintsBox = document.querySelector(".hints");
 

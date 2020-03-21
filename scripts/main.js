@@ -22,7 +22,7 @@ var timeBegan = null,
     startedTimer = null;
 
 var min, newBestscore = 0;
-
+var touchedMine = false;
 var doomShulaInterval;
 
 var manualMineVault = [], manualMinesModeOn = false;
@@ -392,7 +392,7 @@ function cellClicked(elNum, eventButton) {
         if (!(elClickedInnerNum.classList.contains('covered')) || !gGame.isOn || gHult) return;
         var expandingEmptySpots = [];
         var checkedEmptyIdxs = [];
-        var touchedMine = false;
+        touchedMine = false;
 
 
         // Flagging right-pressed spots
@@ -464,7 +464,7 @@ function cellClicked(elNum, eventButton) {
         }
 
         if (!touchedMine) {
-            gHintsAndSafeClicksStats.unshift({hints: gHints, safeClicks: gSafeClick});
+            gHintsAndSafeClicksStats.unshift({ hints: gHints, safeClicks: gSafeClick });
             boardTimeMachine.unshift(document.querySelector('.table').innerHTML);
         }
 
@@ -481,20 +481,20 @@ function cellClicked(elNum, eventButton) {
 // Enables re-rendering of past board configuration
 function shulaTimeMachine(elRedoButton) {
 
-    if(!gGame.isOn || touchedMine) return;
+    if (!gGame.isOn || touchedMine) return;
 
-    if(!gDidTimeMachine) gDidTimeMachine = true;
+    if (!gDidTimeMachine) gDidTimeMachine = true;
 
     if (gGame.shownCount || gMinesIdx.length && boardTimeMachine.length > 0) {
 
         reClickAudio.play();
-        
+
         elRedoButton.style.filter = 'blur(1px)';
         elTable.style.filter = 'blur(2px)';
         gHult = true;
-        
+
         setTimeout(function () {
-            
+
             elRedoButton.style.filter = 'unset';
             elTable.style.filter = 'unset';
             gHult = false;
@@ -542,8 +542,12 @@ function timeMachineStatsRecover() {
         gMinesIdx.pop();
     }
 
-    gHints = gHintsAndSafeClicksStats[0].hints;
-    gSafeClick = gHintsAndSafeClicksStats[0].safeClicks;
+    if (gHintsAndSafeClicksStats.length) {
+
+        gHints = gHintsAndSafeClicksStats[0].hints;
+        gSafeClick = gHintsAndSafeClicksStats[0].safeClicks;
+    }
+
     handleHintsAndSafeClicks('both');
 
     updateLifeStats(-1);
@@ -595,9 +599,10 @@ function revealAllBombs(elPressedBomb) {
     setTimeout(function () {
 
         hideAllBombs(elPressedBomb);
-        gHintsAndSafeClicksStats.unshift({hints: gHints, safeClicks: gSafeClick});
+        gHintsAndSafeClicksStats.unshift({ hints: gHints, safeClicks: gSafeClick });
         boardTimeMachine.unshift(document.querySelector('.table').innerHTML);
         gHult = false;
+        touchedMine = false;
     }, 1000);
 }
 
