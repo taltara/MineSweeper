@@ -476,9 +476,11 @@ function cellClicked(elNum, eventButton) {
 // Enables re-rendering of past board configuration
 function shulaTimeMachine(elRedoButton) {
 
+    if(!gGame.isOn) return;
+
     if(!gDidTimeMachine) gDidTimeMachine = true;
 
-    if (gGame.shownCount || gMinesIdx.length && gGame.isOn && boardTimeMachine.length > 0) {
+    if (gGame.shownCount || gMinesIdx.length && boardTimeMachine.length > 0) {
 
         reClickAudio.play();
         
