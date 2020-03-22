@@ -1,3 +1,5 @@
+'use strict'
+
 const MINE = `<img class="mine" src="assets/bomb.png">`;
 const SPACE = ' ';
 
