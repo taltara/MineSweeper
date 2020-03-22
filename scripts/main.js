@@ -21,7 +21,7 @@ var timeBegan = null,
     stoppedDuration = 0,
     startedTimer = null;
 
-var min, newBestscore = 0;
+var min, newBestscore;
 var touchedMine = false;
 var doomShulaInterval;
 
@@ -47,16 +47,6 @@ reFlagAudio.volume = 0.075;
 
 fakeStartHandler();
 
-// Disabling right-mouse context menu for wanted behaviour
-
-window.addEventListener('contextmenu', function (event) {
-    // console.log(event);
-
-    event.preventDefault();
-
-}, false);
-
-
 //=====================//
 //     FUNCTIONS		//
 //=====================//
@@ -76,7 +66,6 @@ function getFakeBoard() {
         }
         newFakeBoard.push(fakeBoardRow);
     }
-
     return newFakeBoard;
 }
 
@@ -161,7 +150,6 @@ function getShulaBoard(level, mineConfig = null) {
         }
         shulaBoard.push(shulaRow);
     }
-
     checkBombsAround();
 
     return shulaBoard;
@@ -184,7 +172,6 @@ function renderBoard(numsBoard, safeSpot = null, event = null) {
         for (var j = 0; j < numsBoard[i].length; j++) {
 
             gCount += 1;
-
 
             if (numsBoard[i][j] != MINE) {
 
@@ -222,15 +209,11 @@ function renderBoard(numsBoard, safeSpot = null, event = null) {
         if (!Array.isArray(safeSpot)) {
 
             var elSafeSpot = document.querySelector(`.in${safeSpot.i}-${safeSpot.j}`);
-
             cellClicked(elSafeSpot, event);
-
         }
 
         gStart = 0;
     }
-
-
     if (!gStart) gStart = 1
 
 }
@@ -291,7 +274,6 @@ function resetGame(elStartButton, mode = false, event = null) {
         gCount = 0, shulaBoard = [];
 
         renderBoard(getShulaBoard(gLevel, safeSpot), safeSpot, event);
-
     }
 }
 
@@ -305,7 +287,6 @@ function resetManualMineMode() {
         tempIdxJ = manualMineVault[i] % gLevel.SIZE;
 
         var tempSpot = document.querySelector(`.in${tempIdxI}-${tempIdxJ}`);
-        console.log(tempSpot);
 
         tempSpot.style.filter = 'unset';
     }
@@ -331,7 +312,6 @@ function setManualMines(newMineSpot) {
                 resetGame(null, true);
             }, 200);
         }
-
     }
 }
 
@@ -344,15 +324,12 @@ function editMinesHandeler(editMinesButton) {
 
             manualMinesModeOn = true;
             editMinesButton.style.background = 'rgb(127,255,0)';
-
         }
         else {
 
             manualMinesModeOn = false;
-
             editMinesButton.style.background = 'rgb(152,251,152)';
             if (manualMineVault.length) resetManualMineMode();
-
         }
     }
 }
@@ -370,14 +347,11 @@ function cellClicked(elNum, eventButton) {
 
         if (manualMinesModeOn) {
             elClickedNum.style.filter = 'brightness(0.5)';
-
             setManualMines(elClickedNum);
 
         } else {
 
             if (elClickedInnerNum.classList.contains('covered')) {
-                // console.log('GOTHERE');
-
 
                 showHint(elClickedNum);
             } else {
@@ -397,7 +371,6 @@ function cellClicked(elNum, eventButton) {
         var expandingEmptySpots = [];
         var checkedEmptyIdxs = [];
         touchedMine = false;
-
 
         // Flagging right-pressed spots
         if (elClickedNum.classList.contains('flagged')) {
@@ -424,7 +397,6 @@ function cellClicked(elNum, eventButton) {
         if (!gGame.shownCount) {
             startTime();
             handleHintsAndSafeClicks('both');
-
             elTable.classList.add(`table-start-${gLevel.DIFF}`);
         }
 
@@ -460,7 +432,6 @@ function cellClicked(elNum, eventButton) {
                 endGame(true);
             }
             else {
-
                 animateDoomShula('angry');
             }
             var pressedMineIdx = getIdxs(elNum.classList[elNum.classList.length - 1]);
@@ -522,22 +493,16 @@ function timeMachineStatsRecover() {
         for (var j = 0; j < gLevel.SIZE; j++) {
 
             var tempCell = document.querySelector(`.in${i}-${j}`);
-
             var tempCellInner = document.querySelector(`.in${i}-${j} span`);
 
             if (!(tempCellInner.classList.contains('covered'))) {
 
                 shownCells += 1;
 
-                if (tempCellInner.innerHTML === MINE) {
-
-                    minesCount += 1;
-                }
+                if (tempCellInner.innerHTML === MINE) minesCount += 1;
             }
         }
     }
-
-    // if (!(minesCount === gLevel.MINES)) {
 
     gGame.shownCount = shownCells;
     gLives = 3 - minesCount;
@@ -555,7 +520,6 @@ function timeMachineStatsRecover() {
     handleHintsAndSafeClicks('both');
 
     updateLifeStats(-1);
-    // }
 }
 
 // Updates life-related stats
@@ -569,19 +533,13 @@ function updateLifeStats(diff = 0) {
         } else if (diff === 0) {
             gLives = 3;
         }
-
     }
-
-    // console.log(gLives);
 
     var htmlLives = '';
     for (var i = 0; i < gLives; i++) {
-
         htmlLives += `<img src="assets/heart.png" class="heart">`;
     }
-
     document.querySelector('.lives').innerHTML = htmlLives;
-
 }
 
 // Reveals all bombs on bombs press
@@ -594,9 +552,7 @@ function revealAllBombs(elPressedBomb) {
             if (shulaBoard[i][j] === MINE) {
 
                 var elBomb = document.querySelector(`.in${i}-${j} span`);
-
                 elBomb.classList.remove('covered');
-
             }
         }
     }
@@ -621,10 +577,8 @@ function hideAllBombs(elPressedBomb) {
 
                 var elBomb = document.querySelector(`.in${i}-${j} span`);
                 if (!gMinesIdx.includes(i * gLevel.SIZE + j)) {
-
                     elBomb.classList.add('covered');
                 }
-
             }
         }
     }
@@ -666,11 +620,9 @@ function headerAnimationsHandler(won = false, reset = false) {
     var elSmallerHeader = document.querySelector('.smaller-header');
 
     if (!reset) {
-
         if (won) {
 
             elShulaHeader.classList.add('win-header');
-
             elMinesHeader.textContent = '';
             elSmallerHeader.textContent = '';
 
@@ -724,7 +676,6 @@ function showHint(elCenterHintSpot) {
 
     centerHintSpot.classList.remove('covered');
     setTimeout(function () {
-
         centerHintSpot.classList.add('covered');
     }, 1100);
 
@@ -746,7 +697,6 @@ function checkAroundHintSpot(centerHintIdx) {
             if (!(currentSpot.classList.contains('flagged')) && currentSpotInner.classList.contains('covered')) {
 
                 hintVault.push(currentSpotInner);
-
             }
         }
 
@@ -756,7 +706,6 @@ function checkAroundHintSpot(centerHintIdx) {
         else if (k === 6) indexLeft -= 1;
 
     };
-
     var currentSpot;
 
     for (var i = 0; i < hintVault.length; i++) {
@@ -764,8 +713,6 @@ function checkAroundHintSpot(centerHintIdx) {
         currentSpot = hintVault[i];
         currentSpot.classList.remove('covered');
     }
-
-
     hideAllHints();
 }
 

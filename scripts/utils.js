@@ -1,7 +1,6 @@
 const DOOM_HAPPY = 'happy';
 const DOOM_ANGRY = 'angry';
 
-
 //================================//
 //    SCORE HANDELING FUNCTIONS   //
 //================================//
@@ -23,7 +22,6 @@ function updateScore() {
         return true;
     }
     return false;
-
 }
 
 
@@ -70,7 +68,6 @@ function clockRunning() {
 
     gGame.secsPassed = gTime;
 };
-
 
 //====================================//
 //    ANIMATION HANDELING FUNCTIONS   //
@@ -179,11 +176,9 @@ function setMines() {
     for (var i = 0; i < gLevel.MINES; i++) {
 
         while (minesIdxVault.includes(newIdx)) {
-
             newIdx = Math.floor(Math.random() * Math.pow(gLevel.SIZE, 2));
         }
         minesIdxVault.push(newIdx);
-
     }
     return minesIdxVault;
 }
@@ -215,7 +210,6 @@ function checkBombsAround() {
             };
 
             shulaBoard[i][j] = (bombCount) ? bombCount : SPACE;
-
             bombCount = 0;
         };
     };
@@ -275,7 +269,6 @@ function getIdxs(idx) {
             break;
         }
     }
-
     var indexI = idx.slice(2, i);
     var indexJ = idx.slice(i + 1);
 
@@ -292,9 +285,7 @@ function isPresentIdx(spot, checkedIdxs) {
             var tempCheck = checkedIdxs[i];
             if (spot.i === tempCheck.i && spot.j === tempCheck.j) return true;
         }
-
     }
-
     return false;
 }
 
@@ -358,7 +349,6 @@ function handleHintsAndSafeClicks(type, spent = 0) {
 
         }
     }
-
 }
 
 // Hides back all hinted about spots
