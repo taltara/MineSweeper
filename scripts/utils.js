@@ -1,3 +1,5 @@
+'use strict'
+
 const DOOM_HAPPY = 'happy';
 const DOOM_ANGRY = 'angry';
 
